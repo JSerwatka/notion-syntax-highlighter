@@ -1,26 +1,20 @@
 import { adjustId, adjustThemeName, themes } from '../utils/theme';
 import './index.css';
 
-const themeList = themes.map((theme) => {
-  return `
-      <div class="theme-checkbox">
-        <input type="checkbox" id="${adjustId(theme)}" name="${theme}" />
-        <label for="${theme}">
-          ${adjustThemeName(theme)}
-        </label>
-      </div>
-    `;
-});
+const themeListElement = document.querySelector('div.theme-list');
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <main>
-  <h3>Select available themes:</h3>
-  <div class="theme-list">
-      ${themeList.join('')}
-  </div>
-  <h4>All themes can be viewed here<a href="https://highlightjs.org/static/demo/">Highlight.js themes demo</a>
-  </main>
-`;
+// Populate option site with all available themes
+themes.forEach((theme) => {
+  const newThemeCheckbox = document.createElement('div');
+  newThemeCheckbox.className = 'theme-checkbox';
+  newThemeCheckbox.innerHTML = `
+    <input type="checkbox" id="${adjustId(theme)}" name="${theme}" />
+    <label for="${theme}">
+      ${adjustThemeName(theme)}
+    </label>
+  `;
+  themeListElement?.appendChild(newThemeCheckbox);
+});
 
 // Check default options
 chrome.storage.sync.get(['defaultThemes'], (result) => {
