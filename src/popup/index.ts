@@ -1,48 +1,8 @@
 import './index.css';
 
-// const select = document.getElementById('theme-select') as HTMLSelectElement;
-// select.addEventListener('change', () => {
-//   const theme = select.value;
-//   chrome.storage.sync.set({ theme }).then(() => console.log('theme set'));
-//   // chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-//   //   chrome.tabs.sendMessage(tabs[0].id, { action: "changeTheme", theme });
-//   // });
-// });
+const themeSelectElement = document.querySelector('select#theme-select') as HTMLSelectElement;
 
-chrome.storage.onChanged.addListener((changes, areaName) => {
-  if (areaName === 'sync' && changes.defaultThemes) {
-    const defaultThemes = changes.defaultThemes.newValue as string[];
-    const themeSelectElement = document.querySelector('select#theme-select');
-
-    if (!themeSelectElement) {
-      return;
-    }
-
-    // Remove all existing options
-    while (themeSelectElement.firstChild) {
-      themeSelectElement.removeChild(themeSelectElement.firstChild);
-    }
-
-    // Add new options
-    defaultThemes.forEach((defaultTheme) => {
-      const optionElement = document.createElement('option');
-      optionElement.value = defaultTheme;
-      optionElement.text = defaultTheme;
-      themeSelectElement.appendChild(optionElement);
-    });
-  }
-});
-
-chrome.storage.sync.get(['defaultThemes', 'selectedTheme'], (result) => {
-  const defaultThemes = result.defaultThemes as string[];
-  const selectedTheme = result.selectedTheme as string;
-  const themeSelectElement = document.querySelector('select#theme-select');
-
-  console.log(defaultThemes);
-  if (!themeSelectElement || defaultThemes.length === 0) {
-    return;
-  }
-
+const createOptions = (defaultThemes: string[], selectedTheme: string) => {
   defaultThemes.forEach((defaultTheme) => {
     const optionElement = document.createElement('option');
     optionElement.value = defaultTheme;
@@ -52,21 +12,45 @@ chrome.storage.sync.get(['defaultThemes', 'selectedTheme'], (result) => {
     }
     themeSelectElement.appendChild(optionElement);
   });
+};
+
+// Update default themes options if the list has changed
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'sync' && changes.defaultThemes) {
+    const defaultThemes = changes.defaultThemes.newValue as string[];
+
+    // Remove all existing options
+    while (themeSelectElement.firstChild) {
+      themeSelectElement.removeChild(themeSelectElement.firstChild);
+    }
+
+    chrome.storage.sync.get(['selectedTheme'], (result) => {
+      const selectedTheme = result.selectedTheme as string;
+      // Add new options
+      createOptions(defaultThemes, selectedTheme);
+    });
+  }
 });
 
-const themeSelectElement = document.querySelector('select#theme-select');
-if (themeSelectElement) {
-  themeSelectElement.addEventListener('change', (event) => {
-    const selectedTheme = (event.target as HTMLSelectElement).value;
-    chrome.storage.sync.set({ selectedTheme });
-  });
-}
+// Create options for all default themes
+chrome.storage.sync.get(['defaultThemes', 'selectedTheme'], (result) => {
+  const defaultThemes = result.defaultThemes as string[];
+  const selectedTheme = result.selectedTheme as string;
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <main>
-    <label for="theme-select">Select a theme:</label>
-    <select id="theme-select">
-    </select>
-    More themes available in options!
-  </main>
-`;
+  // Handle no theme selected
+  // TODO add better styles
+  if (defaultThemes.length === 0) {
+    const mainElement = document.querySelector('main') as HTMLBaseElement;
+    mainElement.textContent =
+      "No themes selected - right click on the extention and click 'Options' to choose default themes";
+    mainElement.classList.add('no-theme-warning');
+  }
+
+  createOptions(defaultThemes, selectedTheme);
+});
+
+// Update selectedTheme when new option choosen
+themeSelectElement.addEventListener('change', (event) => {
+  const selectedTheme = (event.target as HTMLSelectElement).value;
+  chrome.storage.sync.set({ selectedTheme });
+});
