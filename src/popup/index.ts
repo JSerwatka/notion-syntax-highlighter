@@ -4,6 +4,7 @@ const themeSelectElement = document.querySelector('select#theme-select') as HTML
 
 const createOptions = (defaultThemes: string[], selectedTheme: string) => {
   defaultThemes.forEach((defaultTheme) => {
+    // TODO use modified name, check adjustThemeName func
     const optionElement = document.createElement('option');
     optionElement.value = defaultTheme;
     optionElement.text = defaultTheme;
