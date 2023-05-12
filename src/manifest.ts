@@ -2,7 +2,7 @@ import { defineManifest } from '@crxjs/vite-plugin'
 
 export default defineManifest({
   name: 'create-chrome-ext',
-  description: '',
+  description: 'Adds better syntax highlighting and theme customization to code blocks on Notion.',
   version: '0.0.0',
   manifest_version: 3,
   icons: {
@@ -15,6 +15,7 @@ export default defineManifest({
     default_popup: 'popup.html',
     default_icon: 'img/logo-48.png',
   },
+  options_page: 'options.html',
   background: {
     service_worker: 'src/background/index.ts',
     type: 'module',
@@ -31,5 +32,5 @@ export default defineManifest({
       matches: [],
     },
   ],
-  permissions: ['storage', 'tabs', 'declarativeContent'],
+  permissions: ['storage', 'tabs', 'webNavigation', 'scripting'],
 })
