@@ -15,6 +15,18 @@ const createOptions = (defaultThemes: string[], selectedTheme: string) => {
   });
 };
 
+const createMoreThemesInfo = () => {
+  const mainElement = document.querySelector("#mainContent")
+
+  const optionsLink = `<a href="chrome-extension://${chrome.runtime.id}/options.html" target=”_blank”>options page</a>`
+  const themesLocationInfoElement = document.createElement("div");
+  themesLocationInfoElement.innerHTML = `More themes available in the ${optionsLink}!`;
+
+
+  mainElement?.appendChild(themesLocationInfoElement)
+}
+createMoreThemesInfo();
+
 // Update default themes options if the list has changed
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'sync' && changes.defaultThemes) {
