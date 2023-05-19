@@ -1,17 +1,23 @@
-// import { Grammar } from 'prismjs';
-// import hljs from '../utils/hljs';
+import { Grammar } from 'prismjs';
+import hljs from '../utils/hljs';
 
-// function waitForPrism() {
-//   if (window.Prism) {
-//     window.Prism.highlight = (text: string, config: Grammar, language: string): string => {
-//       console.log({ text, config, language });
-//       const a = hljs.highlight(text, { language: 'javascript', ignoreIllegals: false });
-//       return a.value;
-//     };
-//   } else {
-//     console.log('no Prism');
-//     setTimeout(waitForPrism, 1000);
-//   }
-// }
+function waitForPrism() {
+  if (window.Prism) {
+    const originalPrismHighlighter = window.Prism.highlight;
 
-// waitForPrism();
+    window.Prism.highlight = (text: string, config: Grammar, language: string) => {
+      try {
+        const highlightResult = hljs.highlight(text, { language: language, ignoreIllegals: false });
+        return highlightResult.value;
+      } catch (error) {
+        // Fallback with original syntax highliting for not supported languages
+        return originalPrismHighlighter(text, config, language);
+      }
+    };
+  } else {
+    console.log('no Prism');
+    setTimeout(waitForPrism, 1000);
+  }
+}
+
+waitForPrism();
