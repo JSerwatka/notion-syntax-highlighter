@@ -68,7 +68,7 @@ import rust from 'highlight.js/lib/languages/rust';
 import scss from 'highlight.js/lib/languages/scss';
 import scala from 'highlight.js/lib/languages/scala';
 import scheme from 'highlight.js/lib/languages/scheme';
-// TODO: solidity no support - check https://www.npmjs.com/package/highlightjs-solidity, no types found
+import { solidity } from 'highlightjs-solidity'; // soliditiy needs to use an external package - https://www.npmjs.com/package/highlightjs-solidity
 import sql from 'highlight.js/lib/languages/sql';
 import swift from 'highlight.js/lib/languages/swift';
 import ini from 'highlight.js/lib/languages/ini';
@@ -146,6 +146,7 @@ hljs.registerLanguage('rust', rust);
 hljs.registerLanguage('scss', scss);
 hljs.registerLanguage('scala', scala);
 hljs.registerLanguage('scheme', scheme);
+hljs.registerLanguage('solidity', solidity);
 hljs.registerLanguage('sql', sql);
 hljs.registerLanguage('swift', swift);
 hljs.registerLanguage('ini', ini); // notion returns "toml" for toml, highlight.js uses init package for that, check https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md
