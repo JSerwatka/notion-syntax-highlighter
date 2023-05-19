@@ -1,34 +1,29 @@
-import hljs from '../utils/hljs';
 export {};
+import mainWorld from '../scripts/main-world?script&module'; // info - https://dev.to/jacksteamdev/advanced-config-for-rpce-3966
 
 const loadThemeCSS = (selectedTheme: string) => {
   const linkElement = document.createElement('link');
   linkElement.rel = 'stylesheet';
   linkElement.href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/${selectedTheme}.min.css`;
-  // linkElement.href = chrome.runtime.getURL(`styles/${selectedTheme}.css`);
+  // linkElement.href = chrome.runtime.getURL(`styles/${selectedTheme}.css`); TODO remove all styles from public folder
   linkElement.dataset.theme = selectedTheme;
   document.head.appendChild(linkElement);
 };
 
-// chrome.scripting
-//   .executeScript({
-//     target: { tabId: tab.id },
-//     files: ['https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js']
-//   })
-//   .then(() => console.log('script injected'));
-// const srcElement = document.createElement('script');
-// srcElement.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js';
-
-// document.body.appendChild(srcElement);
-
-function injectScript(file: string, node: string) {
-  const th = document.getElementsByTagName(node)[0];
-  const s = document.createElement('script');
-  s.setAttribute('type', 'text/javascript');
-  s.setAttribute('src', file);
-  th.appendChild(s);
+// function injectScript(file: string, node: string) {
+//   const th = document.getElementsByTagName(node)[0];
+//   const s = document.createElement('script');
+//   s.setAttribute('type', 'text/javascript');
+//   s.setAttribute('src', file);
+//   th.appendChild(s);
+// }
+function injectScript() {
+  const script = document.createElement('script');
+  script.src = chrome.runtime.getURL(mainWorld);
+  script.type = 'module';
+  document.head.prepend(script);
 }
-injectScript(chrome.runtime.getURL('inject-script.js'), 'body');
+injectScript();
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'sync' && changes.selectedTheme) {

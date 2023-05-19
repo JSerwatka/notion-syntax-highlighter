@@ -34,10 +34,6 @@ export default defineManifest({
     {
       resources: ['styles/*', 'styles/base16/*'],
       matches: ['https://*.notion.so/*']
-    },
-    {
-      resources: ['inject-script.js'],
-      matches: ['https://*.notion.so/*']
     }
   ],
   permissions: ['storage', 'tabs', 'scripting', 'activeTab']
