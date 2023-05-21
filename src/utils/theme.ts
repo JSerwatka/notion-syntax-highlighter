@@ -260,7 +260,7 @@ export const capitalizeFirstLetters = (string: string) => {
   return arrayOfWordsCapitalized.join(' ');
 };
 
-// changes to easily readable name: base16/unikitty-dark -> Unkitty Dark
+// Changes to easily readable name: base16/unikitty-dark -> Unkitty Dark
 export const adjustThemeName = (theme: string) => {
   const themeNameNormalized = theme.replace('base16/', '').replace('-', ' ');
 

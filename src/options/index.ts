@@ -1,6 +1,8 @@
 import { adjustId, adjustThemeName, themes } from '../utils/theme';
 import './index.css';
 
+// TODO sort white themes - add infor to /utils/theme
+
 const themeListElement = document.querySelector('div.theme-list');
 
 // Populate option site with all available themes
