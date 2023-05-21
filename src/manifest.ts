@@ -1,7 +1,7 @@
 import { defineManifest } from '@crxjs/vite-plugin';
 
 export default defineManifest({
-  name: 'create-chrome-ext',
+  name: 'notion-syntax-highlighter',
   description: 'Adds better syntax highlighting and theme customization to code blocks on Notion.',
   version: '0.0.0',
   manifest_version: 3,
@@ -30,10 +30,6 @@ export default defineManifest({
     {
       resources: ['img/logo-16.png', 'img/logo-34.png', 'img/logo-48.png', 'img/logo-128.png'],
       matches: []
-    },
-    {
-      resources: ['styles/*', 'styles/base16/*'],
-      matches: ['https://*.notion.so/*']
     }
   ],
   permissions: ['storage', 'tabs', 'scripting', 'activeTab']
