@@ -1,39 +1,55 @@
 export {}; // TODO do I need it?
 import overwritePrismHighligher from '../scripts/overwritePrismHighligher?script&module'; // info: https://dev.to/jacksteamdev/advanced-config-for-rpce-3966
-import { waitForElement } from '../utils/waitForElement';
+import { injectScript, loadThemeCSS } from '../utils/scriptStylesLoaders';
 
-// TODO move to utils
-const loadThemeCSS = (selectedTheme: string) => {
-  const cssLinkElement = document.createElement('link');
-  cssLinkElement.rel = 'stylesheet';
-  cssLinkElement.href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/${selectedTheme}.min.css`;
+injectScript(overwritePrismHighligher);
 
-  cssLinkElement.dataset.theme = selectedTheme;
-  document.head.appendChild(cssLinkElement);
+// TODO make sure that all hlsj css properties are !important
+
+const CODE_BLOCK_SELECTOR = 'div.line-numbers.notion-code-block > div';
+
+const highlightExistingCodeBlocks = () => {
+  const codeBlocks = document.querySelectorAll(CODE_BLOCK_SELECTOR) as NodeListOf<HTMLElement>;
+
+  for (const codeBlock of codeBlocks) {
+    // TODO don't use hljs if language not supported
+    codeBlock.classList.add('hljs');
+
+    // TODO use something more reliable then setTimeout
+    setTimeout(() => {
+      codeBlock.focus();
+      codeBlock.click();
+    }, 200);
+  }
 };
 
-// TODO rename + maybe move to utils
-function injectScript() {
-  const script = document.createElement('script');
-  script.src = chrome.runtime.getURL(overwritePrismHighligher);
-  script.type = 'module';
-  document.head.prepend(script);
-}
-injectScript();
+const highlightNewCodeBlocks = () => {
+  const handleNewNodes = (mutationsList: MutationRecord[]) => {
+    for (const mutation of mutationsList) {
+      for (const newNode of mutation.addedNodes) {
+        if (newNode instanceof Element && newNode.matches('.notion-selectable.notion-code-block')) {
+          const codeBlock = newNode.querySelector(CODE_BLOCK_SELECTOR) as HTMLElement;
+          codeBlock.classList.add('hljs');
+        }
+      }
+    }
+  };
 
-// TODO don't use any
-waitForElement('div.line-numbers.notion-code-block .notranslate').then((elm: any) => {
-  // const content = elm.innerHTML;
-  // elm.innerHTML = `<div class="hljs">${content}</div>`;
-  console.log(elm);
-  console.log(elm.textContent);
-  elm.classList.add('hljs');
-  // TODO make sure that all hlsj css properties are !important
-  // TODO don't use hljs if language not supported
-  // elm.innerHTML = `<pre><code class="hljs">${content}</pre></code>`;
-  // console.log(elm);
-  // console.log(elm.textContent);
-});
+  const codeBlock = document.querySelector('.notion-page-content') as HTMLElement;
+  const newCodeBlocksObserver = new MutationObserver(handleNewNodes);
+  newCodeBlocksObserver.observe(codeBlock, { childList: true });
+};
+
+// Force highlight after
+if (document.readyState !== 'loading') {
+  highlightExistingCodeBlocks();
+  highlightNewCodeBlocks();
+} else {
+  document.addEventListener('DOMContentLoaded', () => {
+    highlightExistingCodeBlocks();
+    highlightNewCodeBlocks();
+  });
+}
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'sync' && changes.selectedTheme) {
@@ -56,4 +72,4 @@ chrome.storage.sync.get('selectedTheme', ({ selectedTheme }) => {
   }
 });
 
-// TODO https://www.freecodecamp.org/news/chrome-extension-message-passing-essentials/
+// info https://www.freecodecamp.org/news/chrome-extension-message-passing-essentials/
