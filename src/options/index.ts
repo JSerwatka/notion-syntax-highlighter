@@ -1,4 +1,4 @@
-import { adjustId, adjustThemeName, themes } from '../utils/theme';
+import { adjustId, adjustThemeName, themes } from '../utils/themes';
 import './index.css';
 
 // TODO sort white themes - add infor to /utils/theme

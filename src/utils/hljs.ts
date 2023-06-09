@@ -160,6 +160,6 @@ hljs.registerLanguage('yaml', yaml);
 
 export default hljs;
 
-// How to change all imports to creaate all register functions:
+// How to change all imports to create all register functions:
 // Find: import\s(.*)(?= from).*
 // Replace: hljs.registerLanguage('$1', $1)

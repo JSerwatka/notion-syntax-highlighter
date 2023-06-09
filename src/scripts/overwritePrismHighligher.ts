@@ -15,8 +15,7 @@ function overwritePrismHighligher() {
       }
     };
   } else {
-    console.log('no Prism');
-    setTimeout(overwritePrismHighligher, 1000);
+    setTimeout(overwritePrismHighligher, 300);
   }
 }
 
