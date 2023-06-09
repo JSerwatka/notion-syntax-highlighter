@@ -1,6 +1,5 @@
-export {}; // TODO do I need it?
-import overwritePrismHighligher from '../scripts/overwritePrismHighligher?script&module'; // info: https://dev.to/jacksteamdev/advanced-config-for-rpce-3966
-import { injectScript, loadThemeCSS } from '../utils/scriptStylesLoaders';
+import overwritePrismHighligher from '../scripts/overwrite-prism-highlighter?script&module'; // info: https://dev.to/jacksteamdev/advanced-config-for-rpce-3966
+import { injectScript, loadThemeCSS } from '../utils/script-styles-loader';
 
 injectScript(overwritePrismHighligher);
 
