@@ -3,16 +3,13 @@ import { injectScript, loadThemeCSS } from '../utils/script-styles-loader';
 
 injectScript(overwritePrismHighligher);
 
-// TODO make sure that all hlsj css properties are !important
-
 const CODE_BLOCK_SELECTOR = 'div.line-numbers.notion-code-block > div';
 
 const highlightExistingCodeBlocks = () => {
   const codeBlocks = document.querySelectorAll(CODE_BLOCK_SELECTOR) as NodeListOf<HTMLElement>;
 
   for (const codeBlock of codeBlocks) {
-    // TODO don't use hljs if language not supported
-    codeBlock.classList.add('hljs');
+    overrideCodeBlockStyles(codeBlock);
 
     // TODO use something more reliable then setTimeout
     setTimeout(() => {
@@ -28,7 +25,7 @@ const highlightNewCodeBlocks = () => {
       for (const newNode of mutation.addedNodes) {
         if (newNode instanceof Element && newNode.matches('.notion-selectable.notion-code-block')) {
           const codeBlock = newNode.querySelector(CODE_BLOCK_SELECTOR) as HTMLElement;
-          codeBlock.classList.add('hljs');
+          overrideCodeBlockStyles(codeBlock);
         }
       }
     }
@@ -37,6 +34,14 @@ const highlightNewCodeBlocks = () => {
   const codeBlock = document.querySelector('.notion-page-content') as HTMLElement;
   const newCodeBlocksObserver = new MutationObserver(handleNewNodes);
   newCodeBlocksObserver.observe(codeBlock, { childList: true });
+};
+
+const overrideCodeBlockStyles = (codeBlock: HTMLElement) => {
+  // TODO don't use hljs if language not supported
+  codeBlock.classList.add('hljs');
+  // Notion has color as inline CSS, which I cannot override with class
+  // that is why I have to remove it
+  codeBlock.style.setProperty('color', null);
 };
 
 // Force highlight after
