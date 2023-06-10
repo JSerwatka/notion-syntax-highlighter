@@ -1,5 +1,5 @@
 import { Grammar } from 'prismjs';
-import hljs from '../utils/hljs';
+import hljs from '../utils/hljs-setup';
 
 function overwritePrismHighligher() {
   if (window.Prism) {
