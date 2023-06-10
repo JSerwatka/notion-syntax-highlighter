@@ -1,3 +1,4 @@
+// TODO handle plainttext
 // TODO: handle non existing languages
 
 import hljs from './hljs-setup';
@@ -10,14 +11,18 @@ const languageObserver = new MutationObserver((mutationsList) => {
 
     const mainCodeWrapper = languageBtnMutation.target.parentElement
       .closest('.notion-selectable.notion-code-block')
-      ?.querySelector('div.line-numbers.notion-code-block > div');
+      ?.querySelector('div.line-numbers.notion-code-block > div') as HTMLElement | null;
 
     if (!mainCodeWrapper) return;
 
-    insertHighlightedCode(
-      mainCodeWrapper as HTMLElement,
-      languageBtnMutation.target.textContent ?? ''
-    );
+    const newlanguage = languageBtnMutation.target.textContent ?? '';
+
+    if (newlanguage in LANGUAGE_MAPPER) {
+      overrideCodeBlockStyles(mainCodeWrapper);
+      insertHighlightedCode(mainCodeWrapper, newlanguage);
+    } else {
+      overrideCodeBlockStyles(mainCodeWrapper, 'remove');
+    }
   }
 });
 
@@ -25,18 +30,7 @@ export const highlightExistingCodeBlocks = () => {
   const codeBlocks = document.querySelectorAll('.notion-selectable.notion-code-block');
 
   for (const codeBlock of codeBlocks) {
-    const { languageBtn, mainCodeWrapper } = getLanguageCodeWrapperElements(codeBlock);
-    if (!mainCodeWrapper || !languageBtn) return;
-
-    const currentLanguage = languageBtn.textContent;
-    overrideCodeBlockStyles(mainCodeWrapper, currentLanguage ?? '');
-    languageObserver.observe(languageBtn, {
-      characterData: true,
-      subtree: true
-    });
-
-    // get current language and run highlight
-    insertHighlightedCode(mainCodeWrapper, currentLanguage ?? '');
+    codeBlockInit(codeBlock);
   }
 };
 
@@ -45,15 +39,7 @@ export const highlightNewCodeBlocks = () => {
     for (const mutation of mutationsList) {
       for (const newNode of mutation.addedNodes) {
         if (newNode instanceof Element && newNode.matches('.notion-selectable.notion-code-block')) {
-          const { languageBtn, mainCodeWrapper } = getLanguageCodeWrapperElements(newNode);
-          if (!mainCodeWrapper || !languageBtn) return;
-
-          const currentLanguage = languageBtn.textContent;
-          overrideCodeBlockStyles(mainCodeWrapper, currentLanguage ?? '');
-          languageObserver.observe(languageBtn, {
-            characterData: true,
-            subtree: true
-          });
+          codeBlockInit(newNode);
         }
       }
     }
@@ -64,28 +50,47 @@ export const highlightNewCodeBlocks = () => {
   newCodeBlocksObserver.observe(codeBlock, { childList: true });
 };
 
-const getLanguageCodeWrapperElements = (codeBlock: Element) => {
-  const languageBtn = codeBlock.querySelector('div[role=button]');
-  const mainCodeWrapper = codeBlock.querySelector('div.line-numbers.notion-code-block > div');
+const codeBlockInit = (codeBlock: Element) => {
+  const languageBtn = codeBlock.querySelector('div[role=button]') as HTMLElement | null;
+  const mainCodeWrapper = codeBlock.querySelector(
+    'div.line-numbers.notion-code-block > div'
+  ) as HTMLElement | null;
 
-  return {
-    languageBtn: languageBtn as Element | null,
-    mainCodeWrapper: mainCodeWrapper as HTMLElement | null
-  };
+  if (!mainCodeWrapper || !languageBtn) return;
+
+  const currentLanguage = languageBtn.textContent ?? '';
+
+  if (currentLanguage in LANGUAGE_MAPPER) {
+    overrideCodeBlockStyles(mainCodeWrapper);
+    insertHighlightedCode(mainCodeWrapper, currentLanguage);
+  }
+
+  languageObserver.observe(languageBtn, {
+    characterData: true,
+    subtree: true
+  });
 };
 
 const insertHighlightedCode = (mainCodeWrapper: HTMLElement, language: string) => {
   const highlightResult = hljs.highlight(mainCodeWrapper?.textContent ?? '', {
-    language: LANGUAGE_MAPPER[language ?? ''],
+    language: LANGUAGE_MAPPER[language],
     ignoreIllegals: false
   });
+
   mainCodeWrapper.innerHTML = highlightResult.value;
 };
 
-const overrideCodeBlockStyles = (codeBlock: HTMLElement, language: string) => {
-  // TODO don't use hljs if language not supported
-  codeBlock.classList.add('hljs');
-  // Notion has text color as inline CSS, which I cannot override with class
-  // that is why I have to remove it
-  codeBlock.style.setProperty('color', null);
+const overrideCodeBlockStyles = (
+  codeWrapper: HTMLElement,
+  mode: 'insert' | 'remove' = 'insert'
+) => {
+  if (mode === 'insert') {
+    codeWrapper.classList.add('hljs');
+    // Notion has text color as inline CSS, which I cannot override with class
+    // that is why I have to remove it
+    codeWrapper.style.setProperty('color', null);
+  } else {
+    codeWrapper.classList.remove('hljs');
+    codeWrapper.style.setProperty('color', 'rgba(255, 255, 255, 0.81)');
+  }
 };

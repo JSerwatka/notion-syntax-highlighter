@@ -1,8 +1,8 @@
 // Mapper copied from Notion's code and adjusted
 
 export const LANGUAGE_MAPPER: Record<string, string> = {
-  ABAP: 'abap',
-  Agda: 'agda',
+  //   ABAP: 'abap',  NOT SUPPORTED
+  //   Agda: 'agda',  NOT SUPPORTED
   Arduino: 'arduino',
   Assembly: 'nasm',
   Bash: 'bash',
@@ -16,7 +16,7 @@ export const LANGUAGE_MAPPER: Record<string, string> = {
   Coq: 'coq',
   CSS: 'css',
   Dart: 'dart',
-  Dhall: 'dhall',
+  //   Dhall: 'dhall', NOT SUPPORTED
   Diff: 'diff',
   Docker: 'docker',
   EBNF: 'ebnf',
@@ -24,7 +24,7 @@ export const LANGUAGE_MAPPER: Record<string, string> = {
   Elm: 'elm',
   Erlang: 'erlang',
   'F#': 'fsharp',
-  Flow: 'flow',
+  //   Flow: 'flow',  NOT SUPPORTED
   Fortran: 'fortran',
   Gherkin: 'gherkin',
   GLSL: 'glsl',
@@ -33,7 +33,7 @@ export const LANGUAGE_MAPPER: Record<string, string> = {
   Groovy: 'groovy',
   Haskell: 'haskell',
   HTML: 'html',
-  Idris: 'idris',
+  //   Idris: 'idris',  NOT SUPPORTED
   Java: 'java',
   JavaScript: 'jsx',
   JSON: 'json',
@@ -50,7 +50,7 @@ export const LANGUAGE_MAPPER: Record<string, string> = {
   Markup: 'markup',
   MATLAB: 'matlab',
   Mathematica: 'mathematica',
-  Mermaid: 'mermaid',
+  //   Mermaid: 'mermaid',  NOT SUPPORTED
   Nix: 'nix',
   'Objective-C': 'objectivec',
   OCaml: 'ocaml',
@@ -61,10 +61,10 @@ export const LANGUAGE_MAPPER: Record<string, string> = {
   PowerShell: 'powershell',
   Prolog: 'prolog',
   Protobuf: 'protobuf',
-  PureScript: 'purescript',
+  //   PureScript: 'purescript',  NOT SUPPORTED
   Python: 'python',
   R: 'r',
-  Racket: 'racket',
+  //   Racket: 'racket', NOT SUPPORTED
   Reason: 'reason',
   Ruby: 'ruby',
   Rust: 'rust',

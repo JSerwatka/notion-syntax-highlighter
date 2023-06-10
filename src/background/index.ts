@@ -1,6 +1,3 @@
-// TODO: do I need it?
-export {};
-
 // Set default themes
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.get(['defaultThemes', 'selectedTheme'], (result) => {

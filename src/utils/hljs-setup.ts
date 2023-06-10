@@ -53,6 +53,7 @@ import objectivec from 'highlight.js/lib/languages/objectivec';
 import ocaml from 'highlight.js/lib/languages/ocaml';
 import delphi from 'highlight.js/lib/languages/delphi';
 import perl from 'highlight.js/lib/languages/perl';
+import plaintext from 'highlight.js/lib/languages/plaintext';
 import php from 'highlight.js/lib/languages/php';
 import powershell from 'highlight.js/lib/languages/powershell';
 import prolog from 'highlight.js/lib/languages/prolog';
@@ -61,10 +62,9 @@ import protobuf from 'highlight.js/lib/languages/protobuf';
 import python from 'highlight.js/lib/languages/python';
 import r from 'highlight.js/lib/languages/r';
 // TODO: racket no support
-import reasonml from 'highlight.js/lib/languages/reasonml'; //TODO
+import reasonml from 'highlight.js/lib/languages/reasonml';
 import ruby from 'highlight.js/lib/languages/ruby';
 import rust from 'highlight.js/lib/languages/rust';
-// TODO: sass no support
 import scss from 'highlight.js/lib/languages/scss';
 import scala from 'highlight.js/lib/languages/scala';
 import scheme from 'highlight.js/lib/languages/scheme';
@@ -85,6 +85,8 @@ hljs.registerAliases(['visual-basic'], { languageName: 'vbnet' });
 hljs.registerAliases(['reason'], { languageName: 'reasonml' });
 hljs.registerAliases(['markdown', 'markup'], { languageName: 'markdown' });
 hljs.registerAliases(['assembly', 'nasm'], { languageName: 'assembly' });
+hljs.registerAliases(['scss', 'sass'], { languageName: 'scss' });
+hljs.registerAliases(['plaintext', 'null'], { languageName: 'plaintext' });
 
 // Register all languages supported by Notion
 hljs.registerLanguage('javascript', javascript);
@@ -134,6 +136,7 @@ hljs.registerLanguage('objectivec', objectivec);
 hljs.registerLanguage('ocaml', ocaml);
 hljs.registerLanguage('delphi', delphi);
 hljs.registerLanguage('perl', perl);
+hljs.registerLanguage('plaintext', plaintext);
 hljs.registerLanguage('php', php);
 hljs.registerLanguage('powershell', powershell);
 hljs.registerLanguage('prolog', prolog);
@@ -143,7 +146,7 @@ hljs.registerLanguage('r', r);
 hljs.registerLanguage('reasonml', reasonml); // notion returns "reason" which originally is not supported by this package - alias extension above
 hljs.registerLanguage('ruby', ruby);
 hljs.registerLanguage('rust', rust);
-hljs.registerLanguage('scss', scss);
+hljs.registerLanguage('scss', scss); // highlightjs doesn't support sass - uses scss syntax instead - check aliases
 hljs.registerLanguage('scala', scala);
 hljs.registerLanguage('scheme', scheme);
 hljs.registerLanguage('solidity', solidity);

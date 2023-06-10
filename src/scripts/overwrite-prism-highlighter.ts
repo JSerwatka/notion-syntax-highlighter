@@ -8,6 +8,7 @@ function overwritePrismHighligher() {
     window.Prism.highlight = (text: string, config: Grammar, language: string) => {
       try {
         const highlightResult = hljs.highlight(text, { language: language, ignoreIllegals: false });
+
         return highlightResult.value;
       } catch (error) {
         // Fallback with original syntax highliting for not supported languages
