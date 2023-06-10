@@ -4,10 +4,9 @@ The extension is still under development, please don't publish it to Chrome Web 
 
 
 # Images
-![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/c2f641a6-557b-42da-ab8b-0de5e37239c4)
-![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/bf54cb99-9941-4f59-9bf6-96e4f2182b1b)
-![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/37e19a64-200e-44c7-ac78-8302ab9ed3cc)
-
+![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/cc69a04a-1970-4426-9a20-e4b2460d2fdb)
+![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/b71cd034-9a65-49c6-9bf0-d5f1d312bd19)
+![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/4ebed17e-6243-4a51-87d1-bc6f0d4d9b54)
 
 # notion-syntax-highlighter
 
