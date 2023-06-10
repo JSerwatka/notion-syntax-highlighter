@@ -151,7 +151,7 @@ hljs.registerLanguage('sql', sql);
 hljs.registerLanguage('swift', swift);
 hljs.registerLanguage('ini', ini); // notion returns "toml" for toml, highlight.js uses init package for that, check https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md
 hljs.registerLanguage('typescript', typescript);
-hljs.registerLanguage('vbnet', vbnet); // notion return "visual-basic", no support for pure vb in highlightjs - apparently vbnet has the most similar syntax - aliax extension above
+hljs.registerLanguage('vbnet', vbnet); // notion return "visual-basic", no support for pure vb in highlightjs - apparently vbnet has the most similar syntax - alias extension above
 hljs.registerLanguage('verilog', verilog);
 hljs.registerLanguage('vhdl', vhdl);
 hljs.registerLanguage('wasm', wasm);
