@@ -35,7 +35,7 @@ export const highlightExistingCodeBlocks = () => {
 };
 
 export const highlightNewCodeBlocks = () => {
-  const handleNewNodes = (mutationsList: MutationRecord[]) => {
+  const newCodeBlocksObserver = new MutationObserver((mutationsList: MutationRecord[]) => {
     for (const mutation of mutationsList) {
       for (const newNode of mutation.addedNodes) {
         if (newNode instanceof Element && newNode.matches('.notion-selectable.notion-code-block')) {
@@ -43,11 +43,9 @@ export const highlightNewCodeBlocks = () => {
         }
       }
     }
-  };
-
+  });
   const codeBlock = document.querySelector('.notion-page-content') as HTMLElement;
-  const newCodeBlocksObserver = new MutationObserver(handleNewNodes);
-  newCodeBlocksObserver.observe(codeBlock, { childList: true });
+  newCodeBlocksObserver.observe(codeBlock, { childList: true, subtree: true });
 };
 
 const codeBlockInit = (codeBlock: Element) => {
