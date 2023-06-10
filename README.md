@@ -2,6 +2,13 @@
 
 The extension is still under development, please don't publish it to Chrome Web Store. I will do it after fixing all issues.
 
+
+# Images
+![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/c2f641a6-557b-42da-ab8b-0de5e37239c4)
+![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/bf54cb99-9941-4f59-9bf6-96e4f2182b1b)
+![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/37e19a64-200e-44c7-ac78-8302ab9ed3cc)
+
+
 # notion-syntax-highlighter
 
 > a chrome extension tools built with Vite + Vanilla, and Manifest v3
