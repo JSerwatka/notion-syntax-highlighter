@@ -1,6 +1,3 @@
-// TODO handle plainttext
-// TODO: handle non existing languages
-
 import hljs from './hljs-setup';
 import { LANGUAGE_MAPPER } from './language-mapper';
 

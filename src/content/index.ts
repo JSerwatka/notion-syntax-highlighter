@@ -7,14 +7,17 @@ import { injectScript, loadThemeCSS } from '../utils/script-styles-loaders';
 
 injectScript(overwritePrismHighligher);
 
-if (document.readyState !== 'loading') {
-  highlightExistingCodeBlocks();
-  highlightNewCodeBlocks();
-} else {
+if (document.readyState == 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     highlightExistingCodeBlocks();
     highlightNewCodeBlocks();
   });
+} else {
+  // TODO find something more reliable
+  setTimeout(() => {
+    highlightExistingCodeBlocks();
+    highlightNewCodeBlocks();
+  }, 1000);
 }
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
