@@ -1,3 +1,7 @@
+# Important
+
+The extension is still under development, please don't publish it to Chrome Web Store. I will do it after fixing all issues.
+
 # notion-syntax-highlighter
 
 > a chrome extension tools built with Vite + Vanilla, and Manifest v3
