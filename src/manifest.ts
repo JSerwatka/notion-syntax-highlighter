@@ -23,7 +23,8 @@ export default defineManifest({
   content_scripts: [
     {
       matches: ['https://*.notion.so/*'],
-      js: ['src/content/index.ts']
+      js: ['src/content/index.ts'],
+      run_at: 'document_start'
     }
   ],
   web_accessible_resources: [

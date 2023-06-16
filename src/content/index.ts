@@ -7,18 +7,8 @@ import { injectScript, loadThemeCSS } from '../utils/script-styles-loaders';
 
 injectScript(overwritePrismHighligher);
 
-if (document.readyState == 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    highlightExistingCodeBlocks();
-    highlightNewCodeBlocks();
-  });
-} else {
-  // TODO find something more reliable
-  setTimeout(() => {
-    highlightExistingCodeBlocks();
-    highlightNewCodeBlocks();
-  }, 1000);
-}
+highlightNewCodeBlocks();
+highlightExistingCodeBlocks();
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'sync' && changes.selectedTheme) {

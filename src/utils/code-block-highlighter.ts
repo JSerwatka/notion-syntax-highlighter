@@ -1,6 +1,20 @@
 import hljs from './hljs-setup';
 import { LANGUAGE_MAPPER } from './language-mapper';
 
+// --- notion code block structure ---
+// <div class="notion-selectable notion-code-block"> <- main wrapper of code block
+//    ...
+//    <div role="button" tabindex="0">...</div> <- contains chosen programming language
+//    ...
+//    <div class="line-numbers notion-code-block"> <- wrapper around div that is populated with html by Prism.highlight()
+//      <div class="notranslate"> <- requires class "hljs" for the themes to work
+//        ... <- html wtih code syntax highlighting
+//      </div>
+//    </div>
+// </div>
+
+// TODO cleanup variable names
+
 const languageObserver = new MutationObserver((mutationsList) => {
   for (const languageBtnMutation of mutationsList) {
     if (languageBtnMutation.type !== 'characterData') return;
@@ -24,7 +38,7 @@ const languageObserver = new MutationObserver((mutationsList) => {
 });
 
 export const highlightExistingCodeBlocks = () => {
-  const codeBlocks = document.querySelectorAll('.notion-selectable.notion-code-block');
+  const codeBlocks = document.querySelectorAll('.line-numbers.notion-code-block');
 
   for (const codeBlock of codeBlocks) {
     codeBlockInit(codeBlock);
@@ -35,21 +49,28 @@ export const highlightNewCodeBlocks = () => {
   const newCodeBlocksObserver = new MutationObserver((mutationsList: MutationRecord[]) => {
     for (const mutation of mutationsList) {
       for (const newNode of mutation.addedNodes) {
-        if (newNode instanceof Element && newNode.matches('.notion-selectable.notion-code-block')) {
+        if (!(newNode instanceof Element)) {
+          return;
+        }
+        // sometimes, an element with the classes ".line-numbers" and ".notion-code-block" is created
+        // however, at other times, it is nested within another created block
+        if (newNode.matches('.line-numbers.notion-code-block')) {
           codeBlockInit(newNode);
+        }
+        if (newNode.querySelector('.line-numbers.notion-code-block')) {
+          const innerBlockNode = newNode.querySelector('.line-numbers.notion-code-block') as HTMLElement;
+          codeBlockInit(innerBlockNode);
         }
       }
     }
   });
-  const codeBlock = document.querySelector('.notion-page-content') as HTMLElement;
-  newCodeBlocksObserver.observe(codeBlock, { childList: true, subtree: true });
+  newCodeBlocksObserver.observe(document.body, { childList: true, subtree: true });
 };
 
 const codeBlockInit = (codeBlock: Element) => {
-  const languageBtn = codeBlock.querySelector('div[role=button]') as HTMLElement | null;
-  const mainCodeWrapper = codeBlock.querySelector(
-    'div.line-numbers.notion-code-block > div'
-  ) as HTMLElement | null;
+  const mainCodeBlock = codeBlock.closest('.notion-selectable.notion-code-block');
+  const languageBtn = mainCodeBlock?.querySelector('div[role=button]') as HTMLElement | null;
+  const mainCodeWrapper = codeBlock.firstElementChild as HTMLElement | null;
 
   if (!mainCodeWrapper || !languageBtn) return;
 
@@ -75,10 +96,7 @@ const insertHighlightedCode = (mainCodeWrapper: HTMLElement, language: string) =
   mainCodeWrapper.innerHTML = highlightResult.value;
 };
 
-const overrideCodeBlockStyles = (
-  codeWrapper: HTMLElement,
-  mode: 'insert' | 'remove' = 'insert'
-) => {
+const overrideCodeBlockStyles = (codeWrapper: HTMLElement, mode: 'insert' | 'remove' = 'insert') => {
   if (mode === 'insert') {
     codeWrapper.classList.add('hljs');
     // Notion has text color as inline CSS, which I cannot override with class
