@@ -1,11 +1,12 @@
-import { adjustId, themes } from '../utils/themes';
+import { ThemeName, adjustId, themes } from '../utils/themes';
 import './index.css';
 
 const themesDarkList = document.querySelector('div.themes-dark-list');
 const themesLightList = document.querySelector('div.themes-light-list');
 
 // Populate option site with all available themes
-for (const themeName in themes) {
+for (const theme in themes) {
+  const themeName = theme as ThemeName;
   const themeId = adjustId(themeName);
   const newThemeCheckbox = document.createElement('div');
 
@@ -26,7 +27,7 @@ for (const themeName in themes) {
 
 // // Check default options
 chrome.storage.sync.get(['defaultThemes'], (result) => {
-  const defaultThemes = result.defaultThemes as string[]; // TODO add better types
+  const defaultThemes = result.defaultThemes as ThemeName[];
   defaultThemes.forEach((defaultTheme) => {
     try {
       const themeCheckbox = document.querySelector(`input[name=${adjustId(defaultTheme)}]`) as HTMLInputElement;
@@ -44,11 +45,11 @@ checkboxes.forEach((checkbox) => {
     const target = event.target as HTMLInputElement;
     if (!target.dataset.theme) return;
 
-    const tagetThemeName: string = target.dataset.theme; // TODO add better types
+    const tagetThemeName = target.dataset.theme as ThemeName;
     const tagetIsChecked = target.checked;
 
     chrome.storage.sync.get('defaultThemes', (result) => {
-      let defaultThemes = result.defaultThemes as string[]; // TODO add better types
+      let defaultThemes = result.defaultThemes as ThemeName[];
       if (tagetIsChecked && defaultThemes.includes(tagetThemeName)) {
         return;
       }

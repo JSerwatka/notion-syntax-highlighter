@@ -1,6 +1,6 @@
-import { themes } from './themes';
+import { ThemeName, themes } from './themes';
 
-export const loadThemeCSS = (selectedTheme: string) => {
+export const loadThemeCSS = (selectedTheme: ThemeName) => {
   const cssLinkElement = document.createElement('link');
   cssLinkElement.rel = 'stylesheet';
   cssLinkElement.href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/${themes[selectedTheme].originalName}.min.css`;

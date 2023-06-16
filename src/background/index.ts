@@ -1,13 +1,13 @@
-// Set default themes
+import { ThemeName } from '../utils/themes';
 
-// TODO improve + use better types
+// Set default themes
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.get(['defaultThemes', 'selectedTheme'], (result) => {
-    const defaultThemes =
+    const defaultThemes: ThemeName[] =
       result.defaultThemes === undefined
         ? ['Gruvbox Dark Medium', 'Atom One Dark', 'Gradient Dark']
         : result.defaultThemes;
-    const selectedTheme = result.selectedTheme === undefined ? 'Gradient Dark' : result.selectedTheme;
+    const selectedTheme: ThemeName = result.selectedTheme === undefined ? 'Gradient Dark' : result.selectedTheme;
     chrome.storage.sync.set({ defaultThemes, selectedTheme });
   });
 });

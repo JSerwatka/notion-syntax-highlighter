@@ -1,11 +1,4 @@
-interface ThemeObject {
-  [name: string]: {
-    originalName: string;
-    type: 'dark' | 'light';
-  };
-}
-
-export const themes: ThemeObject = {
+export const themes = {
   '3024': { originalName: 'base16/3024', type: 'dark' },
   'A11y Dark': { originalName: 'a11y-dark', type: 'dark' },
   'A11y Light': { originalName: 'a11y-light', type: 'light' },
@@ -251,8 +244,10 @@ export const themes: ThemeObject = {
   'Xcode Dusk': { originalName: 'base16/xcode-dusk', type: 'dark' },
   Xt256: { originalName: 'xt256', type: 'dark' },
   Zenburn: { originalName: 'base16/zenburn', type: 'dark' }
-};
+} as const;
 
-export const adjustId = (theme: string) => {
+export const adjustId = (theme: ThemeName) => {
   return theme.toLowerCase().replaceAll(' ', '-');
 };
+
+export type ThemeName = keyof typeof themes;

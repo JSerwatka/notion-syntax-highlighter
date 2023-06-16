@@ -1,9 +1,7 @@
 import overwritePrismHighligher from '../scripts/overwrite-prism-highlighter?script&module'; // info: https://dev.to/jacksteamdev/advanced-config-for-rpce-3966
-import {
-  highlightExistingCodeBlocks,
-  highlightNewCodeBlocks
-} from '../utils/code-block-highlighter';
+import { highlightExistingCodeBlocks, highlightNewCodeBlocks } from '../utils/code-block-highlighter';
 import { injectScript, loadThemeCSS } from '../utils/script-styles-loaders';
+import { ThemeName } from '../utils/themes';
 
 injectScript(overwritePrismHighligher);
 
@@ -12,7 +10,7 @@ highlightExistingCodeBlocks();
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'sync' && changes.selectedTheme) {
-    const selectedTheme = changes.selectedTheme.newValue as string;
+    const selectedTheme = changes.selectedTheme.newValue as ThemeName;
 
     // Remove the existing theme CSS file
     const oldLinkElement = document.querySelector('link[data-theme]');
