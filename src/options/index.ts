@@ -1,31 +1,35 @@
-import { adjustId, adjustThemeName, themes } from '../utils/themes';
+import { adjustId, themes } from '../utils/themes';
 import './index.css';
 
-// TODO sort white themes - add infor to /utils/theme
-
-const themeListElement = document.querySelector('div.theme-list');
+const themesDarkList = document.querySelector('div.themes-dark-list');
+const themesLightList = document.querySelector('div.themes-light-list');
 
 // Populate option site with all available themes
-themes.forEach((theme) => {
+for (const themeName in themes) {
+  const themeId = adjustId(themeName);
   const newThemeCheckbox = document.createElement('div');
+
   newThemeCheckbox.className = 'theme-checkbox';
   newThemeCheckbox.innerHTML = `
-    <input type="checkbox" id="${adjustId(theme)}" name="${theme}" />
-    <label for="${theme}">
-      ${adjustThemeName(theme)}
+    <input type="checkbox" id="${themeId}" name="${themeId}" data-theme="${themeName}" />
+    <label for="${themeId}">
+      ${themeName}
     </label>
   `;
-  themeListElement?.appendChild(newThemeCheckbox);
-});
 
-// Check default options
+  if (themes[themeName].type === 'dark') {
+    themesDarkList!.appendChild(newThemeCheckbox);
+  } else {
+    themesLightList!.appendChild(newThemeCheckbox);
+  }
+}
+
+// // Check default options
 chrome.storage.sync.get(['defaultThemes'], (result) => {
-  const defaultThemes = result.defaultThemes as string[];
+  const defaultThemes = result.defaultThemes as string[]; // TODO add better types
   defaultThemes.forEach((defaultTheme) => {
     try {
-      const themeCheckbox = document.querySelector(
-        `input#${adjustId(defaultTheme)}`
-      ) as HTMLInputElement;
+      const themeCheckbox = document.querySelector(`input[name=${adjustId(defaultTheme)}]`) as HTMLInputElement;
       themeCheckbox.checked = true;
     } catch (error) {
       console.error('Invalid theme name ', defaultTheme);
@@ -33,29 +37,30 @@ chrome.storage.sync.get(['defaultThemes'], (result) => {
   });
 });
 
-// Handle theme list change
-const checkboxList = document.querySelector('.theme-list') as HTMLDivElement;
-checkboxList.addEventListener('change', (event) => {
-  if (
-    event.target &&
-    event.target instanceof HTMLInputElement &&
-    event.target.matches('input[type="checkbox"]')
-  ) {
-    const checkbox = event.target;
+// // Handle theme list change
+const checkboxes = document.querySelectorAll('input[type=checkbox]') as NodeListOf<HTMLInputElement>;
+checkboxes.forEach((checkbox) => {
+  checkbox.addEventListener('change', (event) => {
+    const target = event.target as HTMLInputElement;
+    if (!target.dataset.theme) return;
+
+    const tagetThemeName: string = target.dataset.theme; // TODO add better types
+    const tagetIsChecked = target.checked;
+
     chrome.storage.sync.get('defaultThemes', (result) => {
-      let defaultThemes = result.defaultThemes as string[];
-      if (checkbox.checked && defaultThemes.includes(checkbox.name)) {
+      let defaultThemes = result.defaultThemes as string[]; // TODO add better types
+      if (tagetIsChecked && defaultThemes.includes(tagetThemeName)) {
         return;
       }
 
-      if (checkbox.checked) {
+      if (tagetIsChecked) {
         // Add theme to defaultThemes
-        defaultThemes.push(checkbox.name);
+        defaultThemes.push(tagetThemeName);
       } else {
         // Remove theme from defaultThemes
-        defaultThemes = defaultThemes.filter((theme) => theme !== checkbox.name);
+        defaultThemes = defaultThemes.filter((theme) => theme !== tagetThemeName);
       }
       chrome.storage.sync.set({ defaultThemes });
     });
-  }
+  });
 });
