@@ -38,7 +38,7 @@ chrome.storage.sync.get(['defaultThemes'], (result) => {
   });
 });
 
-// // Handle theme list change
+// Handle theme list change
 const checkboxes = document.querySelectorAll('input[type=checkbox]') as NodeListOf<HTMLInputElement>;
 checkboxes.forEach((checkbox) => {
   checkbox.addEventListener('change', (event) => {
@@ -64,4 +64,41 @@ checkboxes.forEach((checkbox) => {
       chrome.storage.sync.set({ defaultThemes });
     });
   });
+});
+
+// Handle color scheme change
+const mainContainer = document.querySelector('#app');
+const iconDiv = document.querySelector('.theme-icon') as HTMLElement;
+const listsWrapper = document.querySelector('.lists-wrapper') as HTMLElement;
+const moonIcon = iconDiv.querySelector('.icon-tabler-moon');
+const sunIcon = iconDiv.querySelector('.icon-tabler-sun');
+
+const handleThemeChange = (colorScheme: string) => {
+  if (colorScheme === 'light') {
+    moonIcon?.classList.remove('disabled');
+    sunIcon?.classList.add('disabled');
+
+    mainContainer?.classList.add('light');
+    listsWrapper.style.flexDirection = 'column-reverse';
+  } else {
+    moonIcon?.classList.add('disabled');
+    sunIcon?.classList.remove('disabled');
+
+    mainContainer?.classList.remove('light');
+    listsWrapper.style.flexDirection = 'column';
+  }
+};
+
+chrome.storage.sync.get(['prefersColorScheme'], (result) => {
+  handleThemeChange(result.prefersColorScheme);
+});
+
+moonIcon?.addEventListener('pointerdown', () => {
+  handleThemeChange('dark');
+  chrome.storage.sync.set({ prefersColorScheme: 'dark' });
+});
+
+sunIcon?.addEventListener('pointerdown', () => {
+  handleThemeChange('light');
+  chrome.storage.sync.set({ prefersColorScheme: 'light' });
 });

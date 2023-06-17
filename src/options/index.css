@@ -1,28 +1,25 @@
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
+@import '../global.css';
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+input[type='checkbox'] {
+  accent-color: #fe8019;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
+a {
+  margin: 0.5rem;
+}
+
+.theme-icon {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.icon-tabler {
+  cursor: pointer;
+}
+
+.icon.disabled {
+  display: none;
 }
 
 main {
@@ -31,9 +28,14 @@ main {
   margin: 0 auto;
 }
 
+.lists-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .theme-list {
   display: grid;
-  text-align: left;
+  justify-items: start;
   margin: auto;
 }
 
@@ -53,10 +55,4 @@ main {
 
 .theme-checkbox input {
   margin-right: 1rem;
-}
-
-a {
-  margin: 0.5rem;
-  color: #cccccc;
-  text-decoration: none;
 }

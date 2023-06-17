@@ -1,0 +1,48 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  --color-dark: #d5c4a1;
+  --color-light: #504945;
+  --bg-dark: #282828;
+  --bg-light: #fbf1c7;
+  --accent-dark: #83a598;
+  --accent-light: #076678;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#app {
+  margin: 0;
+  padding: 0;
+  color: var(--color-dark);
+  background-color: var(--bg-dark);
+}
+
+a {
+  color: var(--accent-dark);
+  text-decoration: none;
+}
+
+#app.light {
+  color: var(--color-light);
+  background-color: var(--bg-light);
+}
+
+#app.light a {
+  color: var(--accent-light);
+}
