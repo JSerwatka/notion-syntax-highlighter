@@ -9,3 +9,11 @@ main {
   padding: 1em;
   margin: 0 auto;
 }
+
+main > h3 {
+  margin: 0.3rem;
+}
+
+.options-link-wrapper {
+  margin-top: 1rem;
+}

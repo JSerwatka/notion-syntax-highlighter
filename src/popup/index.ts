@@ -15,13 +15,13 @@ const createOptions = (defaultThemes: string[], selectedTheme: string) => {
 };
 
 const createMoreThemesInfo = () => {
-  const mainElement = document.querySelector('#mainContent');
+  const linkWrapper = document.querySelector('.options-link-wrapper');
 
-  const optionsLink = `<a href="chrome-extension://${chrome.runtime.id}/options.html" target=”_blank”>options page</a>`;
+  const optionsLink = `<a class="options-link" href="chrome-extension://${chrome.runtime.id}/options.html" target=”_blank”>options page</a>`;
   const themesLocationInfoElement = document.createElement('div');
   themesLocationInfoElement.innerHTML = `More themes available in the ${optionsLink}!`;
 
-  mainElement?.appendChild(themesLocationInfoElement);
+  linkWrapper?.appendChild(themesLocationInfoElement);
 };
 createMoreThemesInfo();
 
