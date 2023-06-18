@@ -2,10 +2,6 @@
 
 The extension is still under development, please don't publish it to Chrome Web Store. I will do it after fixing all issues.
 
-<!-- ![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/cc69a04a-1970-4426-9a20-e4b2460d2fdb)
-![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/b71cd034-9a65-49c6-9bf0-d5f1d312bd19)
-![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/4ebed17e-6243-4a51-87d1-bc6f0d4d9b54) -->
-
 # Notion Syntax Highlighter
 
 ## About
@@ -13,24 +9,21 @@ The extension is still under development, please don't publish it to Chrome Web 
 ### **245 themes available**
 
 From `Groovbox` to `Solarized`, find the theme that suits you best. Whether you prefer light mode or dark mode, I won't judge.
-
-<!-- #TODO add imgs -->
+![All themes](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/71b6c8a7-c587-434e-b4b3-ab0514424001)
 
 ### **Improved syntax highlighting**
 
-Prism, which is used by Notion, has a rather limited keyword library.
+Prism, which is used by Notion, has a rather limited keyword library. 
 
-It's greatly improved with this extension. Check comparison below:
-
-<!-- #TODO add imgs -->
+It's noticeably improved with this extension.
+![Default vs Notion Syntax Highlighter](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/827a7717-75f6-43e4-84c6-8a06b4d6a3a7)
 
 ### **Update syntax highlighting on language change**
 
 Notion lacks automatic updating of syntax highlighting when changing the language. To see the changes, you need to manually click on the code block.
 
-This issue is resolved with this extension. Check comparison below:
-
-<!-- #TODO add gifs -->
+This issue is resolved with this extension.
+![language change](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/0b0f8d66-e21e-44bf-8500-a6cfc22565ea)
 
 ---
 
