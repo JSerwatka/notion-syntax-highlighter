@@ -28,7 +28,7 @@ From `Groovbox` to `Solarized`, find the theme that suits you best. Whether you 
 Prism, which is used by Notion, has a rather limited keyword library.
 
 It's noticeably improved with this extension.
-![Default vs Notion Syntax Highlighter](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/827a7717-75f6-43e4-84c6-8a06b4d6a3a7)
+![Default vs Notion Syntax Highlighter](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/e9c43e31-7a94-41f8-bb12-f706ba144fcc)
 
 ### **Update syntax highlighting on language change**
 
