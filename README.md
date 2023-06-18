@@ -4,6 +4,16 @@ The extension is still under development, please don't publish it to Chrome Web 
 
 # Notion Syntax Highlighter
 
+**Contents**
+
+- [About](#about)
+  - [245 themes available](#245-themes-available)
+  - [Improved syntax highlighting](#improved-syntax-highlighting)
+  - [Update syntax highlighting on language change](#update-syntax-highlighting-on-language-change)
+- [Developing](#developing)
+- [Known issues](#known-issues)
+- [Build with](#build-with)
+
 ## About
 
 ### **245 themes available**
@@ -13,7 +23,7 @@ From `Groovbox` to `Solarized`, find the theme that suits you best. Whether you 
 
 ### **Improved syntax highlighting**
 
-Prism, which is used by Notion, has a rather limited keyword library. 
+Prism, which is used by Notion, has a rather limited keyword library.
 
 It's noticeably improved with this extension.
 ![Default vs Notion Syntax Highlighter](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/827a7717-75f6-43e4-84c6-8a06b4d6a3a7)
