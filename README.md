@@ -8,7 +8,7 @@ Notion Syntax Highlighter is a Chrome extension that improves Notion's code bloc
 
 **Contents**
 
-- [About](#about)
+- [Features](#features)
   - [245 themes available](#245-themes-available)
   - [Improved syntax highlighting](#improved-syntax-highlighting)
   - [Update syntax highlighting on language change](#update-syntax-highlighting-on-language-change)
@@ -16,7 +16,7 @@ Notion Syntax Highlighter is a Chrome extension that improves Notion's code bloc
 - [Known issues](#known-issues)
 - [Build with](#build-with)
 
-## About
+## Features
 
 ### **245 themes available**
 
