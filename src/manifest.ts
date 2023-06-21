@@ -1,7 +1,7 @@
 import { defineManifest } from '@crxjs/vite-plugin';
 
 export default defineManifest({
-  name: 'notion-syntax-highlighter',
+  name: 'Notion Syntax Highlighter',
   description: "Improves Notion's code blocks syntax highlighting + adds tons of theme options",
   version: '1.0.0',
   manifest_version: 3,
