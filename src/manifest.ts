@@ -4,7 +4,7 @@ export default defineManifest({
   name: 'notion-syntax-highlighter',
   description:
     "Notion Syntax Highlighter is a Chrome extension that improves Notion's code blocks syntax highlighting and adds tons of theme options",
-  version: '1.0.0',
+  version: '0.0.1',
   manifest_version: 3,
   icons: {
     '16': 'img/logo-16.png',
@@ -34,5 +34,5 @@ export default defineManifest({
       matches: []
     }
   ],
-  permissions: ['storage', 'tabs', 'scripting', 'activeTab']
+  permissions: ['storage', 'tabs', 'scripting', 'activeTab', 'declarativeContent']
 });
