@@ -65,7 +65,7 @@ This issue is resolved with this extension.
 ## Known issues
 
 - **Character limit on highlighting**: Syntax highlighting gets disabled after reaching a certain character limit. This mechanism is built into Notion's code blocks originally due to performance issues.
-- **Slow on large code snippets**: When you haven't reached the threshold for disabling syntax highlighting but stil working with a very large code snippet, writing code inside a code block can become sluggish. This is an inherent issue with Notion's code blocks. I will explore ways to improve performance by identifying the differences between the previous and new code blocks and implementing granular HTML editing.
+- **Slow on large code snippets**: When you haven't reached the threshold for disabling syntax highlighting but still working with a very large code snippet, writing code inside a code block can become sluggish. This is an inherent issue with Notion's code blocks. I will explore ways to improve performance by identifying the differences between the previous and new code blocks and implementing granular HTML editing.
 - **Some languages are not supported by `highlight.js`**: Highlighting and themes will fallback to Notion's default for certain languages, such as:
 
   - ABAP
