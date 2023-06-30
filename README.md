@@ -76,6 +76,7 @@ This issue is resolved with this extension.
   - Mermaid
   - PureScript
   - Racket
+- "**Changing Notion appearance requires page refreshing**: When you switch the appearance of Notion from "dark" to "light" (or the other way around), the font color inside the code blocks may not always update. To solve this problem, refresh the page
 
   If you need support for these languages, please create a parser. Check [higlightjs parsers](https://github.com/highlightjs/highlight.js/tree/main/src/languages) for refernece.
 
