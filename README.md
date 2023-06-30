@@ -1,7 +1,3 @@
-# Important
-
-The extension is still under development, please don't publish it to Chrome Web Store. I will do it after fixing all issues.
-
 # Notion Syntax Highlighter
 
 Notion Syntax Highlighter is a Chrome extension that improves Notion's code blocks syntax highlighting and adds tons of theme options.
@@ -76,6 +72,7 @@ This issue is resolved with this extension.
   - Mermaid
   - PureScript
   - Racket
+
 - **Changing Notion appearance requires page refreshing**: When you switch the appearance of Notion from "dark" to "light" (or the other way around), the font color inside the code blocks may not always update. To solve this problem, refresh the page
 
   If you need support for these languages, please create a parser. Check [higlightjs parsers](https://github.com/highlightjs/highlight.js/tree/main/src/languages) for refernece.
