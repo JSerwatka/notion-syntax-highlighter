@@ -1,3 +1,6 @@
+# Chrome Web Store updates
+This extension is currently undergoing a review process to be made available in the Chrome Web Store. Once the review is completed, I will update this repository with the link.
+
 # Notion Syntax Highlighter
 
 Notion Syntax Highlighter is a Chrome extension that improves Notion's code blocks syntax highlighting and adds tons of theme options.
