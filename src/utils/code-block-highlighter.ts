@@ -2,7 +2,7 @@ import hljs from './hljs-setup';
 import { LANGUAGE_MAPPER } from './language-mapper';
 
 // --- NOTION CODE BLOCK - HTML structure ---
-// <div class="notion-selectable notion-code-block"> <- code block wrapper
+// <div class="notion-selectable notion-code-block"> <- code block wrapper (main)
 //    ...
 //    <div role="button" tabindex="0">...</div> <- change programming language (contains chosen language)
 //    ...
@@ -12,6 +12,8 @@ import { LANGUAGE_MAPPER } from './language-mapper';
 //      </div>
 //    </div>
 // </div>
+
+// TODO: lang-selector-options-colors-issue: theme availble in window.theme
 
 const languageObserver = new MutationObserver((mutationsList) => {
   for (const languageBtnMutation of mutationsList) {
