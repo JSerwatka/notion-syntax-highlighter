@@ -77,6 +77,9 @@ This issue is resolved with this extension.
 
 - **Changing Notion appearance requires page refreshing**: When you switch the appearance of Notion from "dark" to "light" (or the other way around), the font color inside the code blocks may not always update. To solve this problem, refresh the page
 
+- **Language selector, cursor and option buttons are not visible in some themes**:
+When a user selects a light theme for a code block while having a dark theme as the Notion color scheme, the "language selector" and cursor become invisible. Additionally, hovering over buttons like copy, caption, etc., causes them to disappear. The same issue exists when using a dark theme for the code block and a light theme for Notion
+
 <br/>
 This extension requires thorough testing, so if you encounter any issues, please report them as bugs.
 
