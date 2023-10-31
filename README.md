@@ -9,6 +9,7 @@ Notion Syntax Highlighter is a Chrome extension that improves Notion's code bloc
   - [Improved syntax highlighting](#improved-syntax-highlighting)
   - [Update syntax highlighting on language change](#update-syntax-highlighting-on-language-change)
 - [Developing](#developing)
+- [For Brave users](#for-brave-users)
 - [Known issues](#known-issues)
 - [Build with](#build-with)
 
@@ -56,6 +57,15 @@ This issue is resolved with this extension.
 5. Enable `Developer mode` in your `Manage Extensions` tab
 6. Click `Load unpacked`, and select `notion-syntax-highlighter/build` folder
 
+## For Brave users
+To make this extension work on Brave browser, please follow this instruction:
+1. Right click the extension -> Manage extension
+2. Enable developer mode and copy the ID
+   ![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/f142f621-9c4e-4d6a-a488-3e8966cfdf46)
+3. Go to brave shields settings (direct URL: brave://settings/shields/filters) and in the section "custom filters" add an exception: "@@chrome-extension://<id>" (so for current version it will be @@chrome-extension://omapdeaklaaabcegmdikkciplbgignak). Don't forget to save changes.
+   ![image](https://github.com/JSerwatka/notion-syntax-highlighter/assets/33938646/db0439b2-ef83-4e7f-aba6-831df7d0769e)
+
+  
 ---
 
 ## Known issues
