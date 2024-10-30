@@ -21,15 +21,17 @@
     "fmt": "prettier --write '**/*.{ts,json,css,scss,md}'"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.0.0-beta.17",
+    "@crxjs/vite-plugin": "^2.0.0-beta.25",
     "@types/chrome": "^0.0.235",
     "@types/prismjs": "^1.26.0",
+    "patch-package": "^8.0.0",
     "prettier": "^2.7.1",
     "typescript": "^4.7.4",
-    "vite": "^3.2.6"
+    "vite": "^5.4.10"
   },
   "dependencies": {
-    "highlight.js": "^11.8.0",
+    "highlight.js": "^11.10.0",
     "highlightjs-solidity": "^2.0.6"
-  }
+  },
+  "postinstall": "patch-package"
 }
