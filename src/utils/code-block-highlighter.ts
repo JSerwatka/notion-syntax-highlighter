@@ -71,6 +71,15 @@ const codeBlockInit = (codeBlock: Element) => {
 
   if (!mainCodeWrapper || !languageBtn) return;
 
+  // Fixes: Notion added padding to the code block, which screws up the highlighting on the edges
+  const paddingParrent = codeBlock.parentElement as HTMLElement | null;
+
+  if (paddingParrent) {
+    const paddingParenntValue = paddingParrent.style.padding;
+    mainCodeWrapper.style.padding = paddingParenntValue;
+    paddingParrent.style.padding = '0';
+  }
+
   const currentLanguage = languageBtn.textContent ?? '';
 
   if (currentLanguage in LANGUAGE_MAPPER) {
