@@ -35,6 +35,65 @@ const languageObserver = new MutationObserver((mutationsList) => {
   }
 });
 
+const prismObserver = new MutationObserver((mutationsList) => {
+  for (const mutation of mutationsList) {
+    const mainCodeWrapper = mutation.target as HTMLElement | null;
+    if (!mainCodeWrapper) return;
+
+    const hasTokenClass = Array.from(mainCodeWrapper.children).some((child) => child.classList.contains('token'));
+    if (hasTokenClass) {
+      const codeBlockWrapper = mainCodeWrapper.closest('.notion-selectable.notion-code-block');
+      const languageBtn = codeBlockWrapper?.querySelector('div[role=button]') as HTMLElement | null;
+
+      const currentLanguage = languageBtn ? languageBtn.textContent ?? '' : '';
+
+      if (currentLanguage in LANGUAGE_MAPPER) {
+        // save current selection position within mainCodeWrapper
+        const sel = window.getSelection();
+        let savedOffset: number | null = null;
+        if (sel && sel.rangeCount > 0) {
+          const range = sel.getRangeAt(0);
+          // calculate the character offset relative to mainCodeWrapper
+          const preRange = range.cloneRange();
+          preRange.selectNodeContents(mainCodeWrapper);
+          preRange.setEnd(range.startContainer, range.startOffset);
+          savedOffset = preRange.toString().length;
+        }
+
+        insertHighlightedCode(mainCodeWrapper, currentLanguage);
+
+        // restore caret position if possible
+        if (savedOffset !== null) {
+          let node = mainCodeWrapper;
+          let offset = savedOffset;
+          // traverse text nodes to find the one containing the caret position
+          const traverse = (n: Node): Node | null => {
+            if (n.nodeType === Node.TEXT_NODE) {
+              if (n.textContent!.length >= offset) return n;
+              offset -= n.textContent!.length;
+            } else {
+              for (let i = 0; i < n.childNodes.length; i++) {
+                const found = traverse(n.childNodes[i]);
+                if (found) return found;
+              }
+            }
+            return null;
+          };
+
+          const targetNode = traverse(mainCodeWrapper);
+          if (targetNode) {
+            const range = document.createRange();
+            range.setStart(targetNode, offset);
+            range.collapse(true);
+            sel?.removeAllRanges();
+            sel?.addRange(range);
+          }
+        }
+      }
+    }
+  }
+});
+
 export const highlightExistingCodeBlocks = () => {
   const codeBlockContentWrappers = document.querySelectorAll('.line-numbers.notion-code-block');
 
@@ -53,6 +112,7 @@ export const highlightNewCodeBlocks = () => {
         // however, at other times, it is nested within another created block
         if (newNode.matches('.line-numbers.notion-code-block')) {
           codeBlockInit(newNode);
+          continue;
         }
         if (newNode.querySelector('.line-numbers.notion-code-block')) {
           const codeBlockContentWrapper = newNode.querySelector('.line-numbers.notion-code-block') as HTMLElement;
@@ -71,6 +131,15 @@ const codeBlockInit = (codeBlock: Element) => {
 
   if (!mainCodeWrapper || !languageBtn) return;
 
+  // Fixes: Notion added padding to the code block, which screws up the highlighting on the edges
+  const paddingParrent = codeBlock.parentElement as HTMLElement | null;
+
+  if (paddingParrent && paddingParrent.style.padding !== '0px') {
+    const paddingParenntValue = paddingParrent.style.padding;
+    mainCodeWrapper.style.padding = paddingParenntValue;
+    paddingParrent.style.padding = '0';
+  }
+
   const currentLanguage = languageBtn.textContent ?? '';
 
   if (currentLanguage in LANGUAGE_MAPPER) {
@@ -82,6 +151,8 @@ const codeBlockInit = (codeBlock: Element) => {
     characterData: true,
     subtree: true
   });
+
+  prismObserver.observe(mainCodeWrapper, { childList: true });
 };
 
 const insertHighlightedCode = (mainCodeWrapper: HTMLElement, language: string) => {
