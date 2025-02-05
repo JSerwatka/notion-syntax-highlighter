@@ -53,16 +53,19 @@ const prismObserver = new MutationObserver((mutationsList) => {
         let savedOffset: number | null = null;
         if (sel && sel.rangeCount > 0) {
           const range = sel.getRangeAt(0);
-          // calculate the character offset relative to mainCodeWrapper
-          const preRange = range.cloneRange();
-          preRange.selectNodeContents(mainCodeWrapper);
-          preRange.setEnd(range.startContainer, range.startOffset);
-          savedOffset = preRange.toString().length;
+          // Only save cursor position if it's within the current code block
+          if (mainCodeWrapper.contains(range.commonAncestorContainer)) {
+            // calculate the character offset relative to mainCodeWrapper
+            const preRange = range.cloneRange();
+            preRange.selectNodeContents(mainCodeWrapper);
+            preRange.setEnd(range.startContainer, range.startOffset);
+            savedOffset = preRange.toString().length;
+          }
         }
 
         insertHighlightedCode(mainCodeWrapper, currentLanguage);
 
-        // restore caret position if possible
+        // restore caret position if possible and if it was in this code block
         if (savedOffset !== null) {
           let node = mainCodeWrapper;
           let offset = savedOffset;
