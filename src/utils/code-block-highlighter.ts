@@ -136,11 +136,10 @@ const codeBlockInit = (codeBlock: Element) => {
 
   // Fixes: Notion added padding to the code block, which screws up the highlighting on the edges
   const paddingParrent = codeBlock.parentElement as HTMLElement | null;
-
   if (paddingParrent && paddingParrent.style.padding !== '0px') {
-    const paddingParenntValue = paddingParrent.style.padding;
-    mainCodeWrapper.style.padding = paddingParenntValue;
+    mainCodeWrapper.style.padding = "32px 22px";
     paddingParrent.style.padding = '0';
+    (codeBlock as HTMLElement).style.padding = "0px"
   }
 
   const currentLanguage = languageBtn.textContent ?? '';
