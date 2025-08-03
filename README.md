@@ -1,6 +1,9 @@
+<a href="https://www.buymeacoffee.com/jserwatka" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: auto !important;" ></a>
+
 # Notion Syntax Highlighter
 
-<a href="https://www.buymeacoffee.com/jserwatka" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: auto !important;" ></a>
+<a href="https://addons.mozilla.org/firefox/addon/notion-syntax-highlighter/" target="_blank"><img src="https://user-images.githubusercontent.com/585534/107280546-7b9b2a00-6a26-11eb-8f9f-f95932f4bfec.png" alt="Get Notion Syntax Highlighter for Firefox"></a>
+<a href="https://chromewebstore.google.com/detail/notion-syntax-highlighter/omapdeaklaaabcegmdikkciplbgignak" target="_blank"><img src="https://user-images.githubusercontent.com/585534/107280622-91a8ea80-6a26-11eb-8d07-77c548b28665.png" alt="Get Notion Syntax Highlighter for Chromium"></a>
 
 Notion Syntax Highlighter is a Chrome extension / Firefox add-on that improves Notion's code blocks syntax highlighting and adds tons of theme options.
 
