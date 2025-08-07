@@ -1,6 +1,7 @@
-import { defineManifest } from '@crxjs/vite-plugin';
+import { defineManifest, ManifestV3Export } from '@crxjs/vite-plugin';
+import { TARGET } from '../consts';
 
-export default defineManifest({
+const manifestBase: ManifestV3Export = {
   name: 'Notion Syntax Highlighter',
   description: "Improves Notion's code blocks syntax highlighting + adds tons of theme options",
   version: '0.0.7',
@@ -17,10 +18,6 @@ export default defineManifest({
     default_icon: 'img/logo-48.png'
   },
   options_page: 'options.html',
-  background: {
-    service_worker: 'src/background/index.ts',
-    type: 'module'
-  },
   content_scripts: [
     {
       matches: ['https://*.notion.so/*'],
@@ -34,4 +31,26 @@ export default defineManifest({
       matches: []
     }
   ]
-});
+};
+
+if (TARGET === 'chrome') {
+  manifestBase.background = {
+    service_worker: 'src/background/index.ts',
+    type: 'module'
+  };
+} else {
+  // FIREFOX
+  (manifestBase as any).browser_specific_settings = {
+    gecko: {
+      id: 'notion-syntax-highlighter@example.com',
+      strict_min_version: '112.0'
+    }
+  };
+
+  manifestBase.background = {
+    scripts: ['src/background/index.ts'],
+    type: 'module'
+  };
+}
+
+export default defineManifest(manifestBase);
