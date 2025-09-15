@@ -45,21 +45,21 @@ checkboxes.forEach((checkbox) => {
     const target = event.target as HTMLInputElement;
     if (!target.dataset.theme) return;
 
-    const tagetThemeName = target.dataset.theme as ThemeName;
-    const tagetIsChecked = target.checked;
+    const targetThemeName = target.dataset.theme as ThemeName;
+    const targetIsChecked = target.checked;
 
     chrome.storage.sync.get('defaultThemes', (result) => {
       let defaultThemes = result.defaultThemes as ThemeName[];
-      if (tagetIsChecked && defaultThemes.includes(tagetThemeName)) {
+      if (targetIsChecked && defaultThemes.includes(targetThemeName)) {
         return;
       }
 
-      if (tagetIsChecked) {
+      if (targetIsChecked) {
         // Add theme to defaultThemes
-        defaultThemes.push(tagetThemeName);
+        defaultThemes.push(targetThemeName);
       } else {
         // Remove theme from defaultThemes
-        defaultThemes = defaultThemes.filter((theme) => theme !== tagetThemeName);
+        defaultThemes = defaultThemes.filter((theme) => theme !== targetThemeName);
       }
       chrome.storage.sync.set({ defaultThemes });
     });

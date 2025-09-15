@@ -8,7 +8,7 @@ import { LANGUAGE_MAPPER } from './language-mapper';
 //    ...
 //    <div class="line-numbers notion-code-block"> <- code block content wrapper
 //      <div class="notranslate"> <-  main code wrapper is populated with html by Prism.highlight(), requires class "hljs" for the themes to work
-//        ... <- html wtih code syntax highlighting
+//        ... <- html with code syntax highlighting
 //      </div>
 //    </div>
 // </div>
@@ -135,10 +135,10 @@ const codeBlockInit = (codeBlock: Element) => {
   if (!mainCodeWrapper || !languageBtn) return;
 
   // Fixes: Notion added padding to the code block, which screws up the highlighting on the edges
-  const paddingParrent = codeBlock.parentElement as HTMLElement | null;
-  if (paddingParrent && paddingParrent.style.padding !== '0px') {
+  const paddingParent = codeBlock.parentElement as HTMLElement | null;
+  if (paddingParent && paddingParent.style.padding !== '0px') {
     mainCodeWrapper.style.padding = "32px 22px";
-    paddingParrent.style.padding = '0';
+    paddingParent.style.padding = '0';
     (codeBlock as HTMLElement).style.padding = "0px"
   }
 

@@ -60,7 +60,7 @@ chrome.storage.sync.get(['defaultThemes', 'selectedTheme'], (result) => {
   createOptions(defaultThemes, selectedTheme);
 });
 
-// Update selectedTheme when new option choosen
+// Update selectedTheme when new option chosen
 themeSelectElement.addEventListener('change', (event) => {
   const selectedTheme = (event.target as HTMLSelectElement).value;
   chrome.storage.sync.set({ selectedTheme });
