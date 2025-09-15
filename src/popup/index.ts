@@ -1,6 +1,7 @@
 import './index.css';
 
 const themeSelectElement = document.querySelector('select#theme-select') as HTMLSelectElement;
+const optionsLink = `<a class="options-link" href="${chrome.runtime.getURL('options.html')}" target=”_blank”>options page</a>`;
 
 const createOptions = (defaultThemes: string[], selectedTheme: string) => {
   defaultThemes.forEach((defaultTheme) => {
@@ -17,7 +18,6 @@ const createOptions = (defaultThemes: string[], selectedTheme: string) => {
 const createMoreThemesInfo = () => {
   const linkWrapper = document.querySelector('.options-link-wrapper');
 
-  const optionsLink = `<a class="options-link" href="chrome-extension://${chrome.runtime.id}/options.html" target=”_blank”>options page</a>`;
   const themesLocationInfoElement = document.createElement('div');
   themesLocationInfoElement.innerHTML = `More themes available in the ${optionsLink}!`;
 
@@ -52,8 +52,7 @@ chrome.storage.sync.get(['defaultThemes', 'selectedTheme'], (result) => {
   // TODO add better styles
   if (defaultThemes.length === 0) {
     const mainElement = document.querySelector('main') as HTMLBaseElement;
-    mainElement.textContent =
-      "No themes selected - right click on the extention and click 'Options' to choose default themes";
+    mainElement.innerHTML = `No themes selected - go to ${optionsLink} to choose default themes`;
     mainElement.classList.add('no-theme-warning');
   }
 
