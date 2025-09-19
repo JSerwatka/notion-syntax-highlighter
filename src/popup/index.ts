@@ -1,7 +1,9 @@
 import './index.css';
 
 const themeSelectElement = document.querySelector('select#theme-select') as HTMLSelectElement;
-const optionsLink = `<a class="options-link" href="${chrome.runtime.getURL('options.html')}" target=”_blank”>options page</a>`;
+const optionsLink = `<a class="options-link" href="${chrome.runtime.getURL(
+  'options.html'
+)}" target=”_blank”>options page</a>`;
 
 const createOptions = (defaultThemes: string[], selectedTheme: string) => {
   defaultThemes.forEach((defaultTheme) => {

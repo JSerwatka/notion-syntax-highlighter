@@ -4,7 +4,7 @@ import { TARGET } from '../consts';
 const manifestBase: ManifestV3Export = {
   name: 'Notion Syntax Highlighter',
   description: "Improves Notion's code blocks syntax highlighting + adds tons of theme options",
-  version: '0.0.7',
+  version: '0.0.8',
   manifest_version: 3,
   permissions: ['storage'],
   icons: {
