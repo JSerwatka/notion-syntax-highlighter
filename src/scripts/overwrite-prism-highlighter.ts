@@ -1,7 +1,7 @@
 import { Grammar } from 'prismjs';
 import hljs from '../utils/hljs-setup';
 
-function overwritePrismHighligher() {
+function overwritePrismHighlighter() {
   if (window.Prism) {
     const originalPrismHighlighter = window.Prism.highlight;
 
@@ -11,13 +11,13 @@ function overwritePrismHighligher() {
 
         return highlightResult.value;
       } catch (error) {
-        // Fallback with original syntax highliting for not supported languages
+        // Fallback with original syntax highlighting for not supported languages
         return originalPrismHighlighter(text, config, language);
       }
     };
   } else {
-    setTimeout(overwritePrismHighligher, 300);
+    setTimeout(overwritePrismHighlighter, 300);
   }
 }
 
-overwritePrismHighligher();
+overwritePrismHighlighter();
