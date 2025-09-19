@@ -23,7 +23,7 @@
     "fmt": "prettier --write '**/*.{ts,json,css,scss,md}'"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.0.0-beta.25",
+    "@crxjs/vite-plugin": "^2.2.0",
     "@types/chrome": "^0.0.235",
     "@types/node": "^24.1.0",
     "@types/prismjs": "^1.26.0",
