@@ -380,9 +380,11 @@ const overrideCodeBlockStyles = (codeContentElement: HTMLElement, mode: 'insert'
     codeContentElement.classList.add('hljs');
     // Notion sets text color as inline style, so remove it for theme classes to apply.
     codeContentElement.style.setProperty('color', null);
+    codeContentElement.style.setProperty('border-radius', '10px');
   } else {
     codeContentElement.classList.remove('hljs');
     codeContentElement.style.setProperty('color', 'rgba(255, 255, 255, 0.81)');
+    codeContentElement.style.setProperty('border-radius', '10px');
   }
 };
 
