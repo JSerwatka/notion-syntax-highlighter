@@ -1,12 +1,8 @@
 import overwritePrismHighlighter from '../scripts/overwrite-prism-highlighter?script&module'; // info: https://dev.to/jacksteamdev/advanced-config-for-rpce-3966
-import { highlightExistingCodeBlocks, highlightNewCodeBlocks } from '../utils/code-block-highlighter';
 import { injectScript, loadThemeCSS } from '../utils/script-styles-loaders';
 import { ThemeName } from '../utils/themes';
 
 injectScript(overwritePrismHighlighter);
-
-highlightNewCodeBlocks();
-highlightExistingCodeBlocks();
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === 'sync' && changes.selectedTheme) {
