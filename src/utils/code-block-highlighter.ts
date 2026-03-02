@@ -3,8 +3,12 @@ import { LANGUAGE_MAPPER } from './language-mapper';
 
 const LOADING_CODE_PLACEHOLDER_REGEX = /^>\s*Loading(?:[\s\S]*?)code\.\.\.$/i;
 const contentReadyObservers = new WeakMap<HTMLElement, MutationObserver>();
-const DEBUG_LOGS_ENABLED = true;
+const languageRetryTimers = new WeakMap<HTMLElement, number>();
+const languageRetryAttempts = new WeakMap<HTMLElement, number>();
+const DEBUG_LOGS_ENABLED = false;
 const DEBUG_PREFIX = '[NSH][code-highlighter]';
+const LANGUAGE_RETRY_DELAY_MS = 120;
+const MAX_LANGUAGE_RETRY_ATTEMPTS = 10;
 
 type LanguageInfo = {
   language: string;
@@ -76,7 +80,7 @@ export const highlightNewCodeBlocks = () => {
       for (const newNode of mutation.addedNodes) {
         if (!(newNode instanceof Element)) {
           debugLog('highlightNewCodeBlocks:skip-non-element-node');
-          return;
+          continue;
         }
 
         // sometimes, an element with the classe ".notion-code-block" is created
@@ -153,7 +157,7 @@ const handleCodeMutations = (mutationsList: MutationRecord[]) => {
     const codeContentElement = mutation.target as HTMLElement | null;
     if (!codeContentElement) {
       debugLog('handleCodeMutations:missing-target-element');
-      return;
+      continue;
     }
 
     if (!hasRealCodeContent(codeContentElement)) {
@@ -201,6 +205,56 @@ const waitForCodeContentAndHighlight = (codeContentElement: HTMLElement) => {
 
 // Highlight pipeline
 
+const resetLanguageRetryState = (codeContentElement: HTMLElement) => {
+  const retryTimerId = languageRetryTimers.get(codeContentElement);
+  if (retryTimerId !== undefined) {
+    window.clearTimeout(retryTimerId);
+    languageRetryTimers.delete(codeContentElement);
+  }
+  languageRetryAttempts.delete(codeContentElement);
+};
+
+const scheduleLanguageRetry = (codeContentElement: HTMLElement, preserveSelection: boolean) => {
+  if (!codeContentElement.isConnected) {
+    resetLanguageRetryState(codeContentElement);
+    debugLog('highlightCodeBlock:language-retry-skip-disconnected-element', getElementDebugMeta(codeContentElement));
+    return;
+  }
+
+  if (languageRetryTimers.has(codeContentElement)) {
+    debugLog('highlightCodeBlock:language-retry-already-scheduled', getElementDebugMeta(codeContentElement));
+    return;
+  }
+
+  const nextAttempt = (languageRetryAttempts.get(codeContentElement) ?? 0) + 1;
+  if (nextAttempt > MAX_LANGUAGE_RETRY_ATTEMPTS) {
+    resetLanguageRetryState(codeContentElement);
+    debugLog('highlightCodeBlock:language-retry-max-attempts-reached', {
+      maxAttempts: MAX_LANGUAGE_RETRY_ATTEMPTS,
+      codeBlock: getElementDebugMeta(codeContentElement.closest('.notion-code-block'))
+    });
+    return;
+  }
+
+  languageRetryAttempts.set(codeContentElement, nextAttempt);
+  debugLog('highlightCodeBlock:language-retry-scheduled', {
+    attempt: nextAttempt,
+    delayMs: LANGUAGE_RETRY_DELAY_MS,
+    codeBlock: getElementDebugMeta(codeContentElement.closest('.notion-code-block'))
+  });
+
+  const timeoutId = window.setTimeout(() => {
+    languageRetryTimers.delete(codeContentElement);
+    debugLog('highlightCodeBlock:language-retry-running', {
+      attempt: nextAttempt,
+      codeBlock: getElementDebugMeta(codeContentElement.closest('.notion-code-block'))
+    });
+    highlightCodeBlock(codeContentElement, preserveSelection);
+  }, LANGUAGE_RETRY_DELAY_MS);
+
+  languageRetryTimers.set(codeContentElement, timeoutId);
+};
+
 const highlightCodeBlock = (codeContentElement: HTMLElement, preserveSelection = false) => {
   const codeBlockWrapper = codeContentElement.closest('.notion-code-block');
   const languageInfo = getCodeBlockLanguage(codeBlockWrapper);
@@ -216,9 +270,16 @@ const highlightCodeBlock = (codeContentElement: HTMLElement, preserveSelection =
   });
 
   if (!(currentLanguage in LANGUAGE_MAPPER)) {
+    if (!currentLanguage) {
+      scheduleLanguageRetry(codeContentElement, preserveSelection);
+    } else {
+      resetLanguageRetryState(codeContentElement);
+    }
     debugLog('highlightCodeBlock:language-not-supported-by-mapper', { currentLanguage, languageInfo });
     return;
   }
+
+  resetLanguageRetryState(codeContentElement);
 
   const savedOffset = preserveSelection ? captureSelectionOffset(codeContentElement) : null;
   if (preserveSelection) {
@@ -327,6 +388,36 @@ const overrideCodeBlockStyles = (codeContentElement: HTMLElement, mode: 'insert'
 
 // React language extraction
 
+const getReactFiberFromElement = (element: Element): FiberNode | null => {
+  const reactKey = Object.keys(element).find((k) => k.includes('reactFiber') || k.includes('reactInternal'));
+  if (!reactKey) return null;
+
+  const fiber = (element as Record<string, unknown>)[reactKey] as FiberNode | undefined;
+  return fiber ?? null;
+};
+
+const findReactFiberNearCodeBlock = (codeBlockElement: Element): FiberNode | null => {
+  const directFiber = getReactFiberFromElement(codeBlockElement);
+  if (directFiber) return directFiber;
+
+  const children = Array.from(codeBlockElement.children);
+  for (const child of children) {
+    const childFiber = getReactFiberFromElement(child);
+    if (childFiber) return childFiber;
+  }
+
+  let parent = codeBlockElement.parentElement;
+  let depth = 0;
+  while (parent && depth < 3) {
+    const parentFiber = getReactFiberFromElement(parent);
+    if (parentFiber) return parentFiber;
+    parent = parent.parentElement;
+    depth += 1;
+  }
+
+  return null;
+};
+
 const getCodeBlockLanguage = (codeBlockElement: Element | null): LanguageInfo | null => {
   if (!codeBlockElement) {
     debugLog('getCodeBlockLanguage:missing-code-block-element');
@@ -334,15 +425,9 @@ const getCodeBlockLanguage = (codeBlockElement: Element | null): LanguageInfo | 
   }
 
   // Notion stores language in React internals; DOM alone does not expose it reliably.
-  const reactKey = Object.keys(codeBlockElement).find((k) => k.includes('reactFiber') || k.includes('reactInternal'));
-  if (!reactKey) {
-    debugLog('getCodeBlockLanguage:missing-react-internal-key', getElementDebugMeta(codeBlockElement));
-    return null;
-  }
-
-  const rootFiber = (codeBlockElement as Record<string, unknown>)[reactKey] as FiberNode | undefined;
+  const rootFiber = findReactFiberNearCodeBlock(codeBlockElement);
   if (!rootFiber) {
-    debugLog('getCodeBlockLanguage:react-root-fiber-missing', { reactKey });
+    debugLog('getCodeBlockLanguage:react-root-fiber-missing', getElementDebugMeta(codeBlockElement));
     return null;
   }
 
