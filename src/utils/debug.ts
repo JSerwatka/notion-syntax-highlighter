@@ -7,7 +7,7 @@ export const debugLog = (...args: unknown[]) => {
 };
 
 export const getElementDebugMeta = (element: Element | null) => {
-  if (!element) return null;
+  if (!DEBUG_LOGS_ENABLED || !element) return null;
 
   return {
     tag: element.tagName,
