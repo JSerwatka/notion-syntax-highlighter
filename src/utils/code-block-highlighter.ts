@@ -3,6 +3,8 @@ import { LANGUAGE_MAPPER } from './language-mapper';
 
 const LOADING_CODE_PLACEHOLDER_REGEX = /^>\s*Loading(?:[\s\S]*?)code\.\.\.$/i;
 const contentReadyObservers = new WeakMap<HTMLElement, MutationObserver>();
+const DEBUG_LOGS_ENABLED = true;
+const DEBUG_PREFIX = '[NSH][code-highlighter]';
 
 type LanguageInfo = {
   language: string;
@@ -27,6 +29,22 @@ type FiberNode = {
   elementType?: { name?: string } | null;
 };
 
+const debugLog = (...args: unknown[]) => {
+  if (!DEBUG_LOGS_ENABLED) return;
+
+  console.debug(DEBUG_PREFIX, ...args);
+};
+
+const getElementDebugMeta = (element: Element | null) => {
+  if (!element) return null;
+
+  return {
+    tag: element.tagName,
+    className: element.className,
+    textPreview: (element.textContent ?? '').trim().slice(0, 80)
+  };
+};
+
 // Notion still writes a loading placeholder before real code text is attached.
 const hasRealCodeContent = (codeContentElement: HTMLElement): boolean => {
   const codeContent = codeContentElement.textContent?.trim() ?? '';
@@ -42,6 +60,7 @@ const codeMutationObserver = new MutationObserver((mutationsList) => {
 
 export const highlightExistingCodeBlocks = () => {
   const codeBlocks = document.querySelectorAll('.line-numbers.notion-code-block');
+  debugLog('highlightExistingCodeBlocks:start', { count: codeBlocks.length });
 
   for (const codeBlock of codeBlocks) {
     initializeCodeBlock(codeBlock);
@@ -49,19 +68,27 @@ export const highlightExistingCodeBlocks = () => {
 };
 
 export const highlightNewCodeBlocks = () => {
+  debugLog('highlightNewCodeBlocks:observer-attached');
   const newCodeBlocksObserver = new MutationObserver((mutationsList: MutationRecord[]) => {
+    debugLog('highlightNewCodeBlocks:mutations', { count: mutationsList.length });
+
     for (const mutation of mutationsList) {
       for (const newNode of mutation.addedNodes) {
-        if (!(newNode instanceof Element)) return;
+        if (!(newNode instanceof Element)) {
+          debugLog('highlightNewCodeBlocks:skip-non-element-node');
+          return;
+        }
 
         // sometimes, an element with the classe ".notion-code-block" is created
         // however, at other times, it is nested within another created block
         if (newNode.matches('.notion-code-block')) {
+          debugLog('highlightNewCodeBlocks:direct-code-block-found', getElementDebugMeta(newNode));
           initializeCodeBlock(newNode);
           continue;
         }
         if (newNode.querySelector('.notion-code-block')) {
           const codeBlockContentWrapper = newNode.querySelector('.notion-code-block') as HTMLElement;
+          debugLog('highlightNewCodeBlocks:nested-code-block-found', getElementDebugMeta(codeBlockContentWrapper));
           initializeCodeBlock(codeBlockContentWrapper);
         }
       }
@@ -73,18 +100,25 @@ export const highlightNewCodeBlocks = () => {
 // Initialization and discovery
 
 const initializeCodeBlock = (codeBlock: Element) => {
+  debugLog('initializeCodeBlock:start', getElementDebugMeta(codeBlock));
   const codeContentElement = findCodeContentElement(codeBlock);
-  if (!codeContentElement) return;
+  if (!codeContentElement) {
+    debugLog('initializeCodeBlock:missing-code-content-element', getElementDebugMeta(codeBlock));
+    return;
+  }
 
   normalizeNotionPadding(codeBlock, codeContentElement);
 
   if (hasRealCodeContent(codeContentElement)) {
+    debugLog('initializeCodeBlock:content-ready-immediately', getElementDebugMeta(codeContentElement));
     highlightCodeBlock(codeContentElement);
   } else {
+    debugLog('initializeCodeBlock:content-not-ready-waiting', getElementDebugMeta(codeContentElement));
     waitForCodeContentAndHighlight(codeContentElement);
   }
 
   codeMutationObserver.observe(codeContentElement, { childList: true, subtree: true, characterData: true });
+  debugLog('initializeCodeBlock:observer-attached', getElementDebugMeta(codeContentElement));
 };
 
 const findCodeContentElement = (codeBlock: Element): HTMLElement | null => {
@@ -96,6 +130,10 @@ const normalizeNotionPadding = (codeBlock: Element, codeContentElement: HTMLElem
   const paddingParent = codeBlock.parentElement as HTMLElement | null;
   if (!paddingParent || paddingParent.style.padding === '0px') return;
 
+  debugLog('normalizeNotionPadding:adjusting-padding', {
+    codeBlock: getElementDebugMeta(codeBlock),
+    parentPadding: paddingParent.style.padding
+  });
   codeContentElement.style.padding = '32px 22px';
   paddingParent.style.padding = '0';
   (codeBlock as HTMLElement).style.padding = '0px';
@@ -104,17 +142,31 @@ const normalizeNotionPadding = (codeBlock: Element, codeContentElement: HTMLElem
 // Observer callbacks
 
 const handleCodeMutations = (mutationsList: MutationRecord[]) => {
+  debugLog('handleCodeMutations:start', { count: mutationsList.length });
+
   for (const mutation of mutationsList) {
+    debugLog('handleCodeMutations:item', {
+      type: mutation.type,
+      targetNodeType: mutation.target.nodeType
+    });
+
     const codeContentElement = mutation.target as HTMLElement | null;
-    if (!codeContentElement) return;
+    if (!codeContentElement) {
+      debugLog('handleCodeMutations:missing-target-element');
+      return;
+    }
 
     if (!hasRealCodeContent(codeContentElement)) {
+      debugLog('handleCodeMutations:content-not-ready', getElementDebugMeta(codeContentElement));
       waitForCodeContentAndHighlight(codeContentElement);
       continue;
     }
 
     if (hasTokenClassChild(codeContentElement)) {
+      debugLog('handleCodeMutations:token-child-detected-rehighlight', getElementDebugMeta(codeContentElement));
       highlightCodeBlock(codeContentElement, true);
+    } else {
+      debugLog('handleCodeMutations:no-token-child-skip', getElementDebugMeta(codeContentElement));
     }
   }
 };
@@ -124,13 +176,22 @@ const hasTokenClassChild = (codeContentElement: HTMLElement): boolean => {
 };
 
 const waitForCodeContentAndHighlight = (codeContentElement: HTMLElement) => {
-  if (contentReadyObservers.has(codeContentElement)) return;
+  if (contentReadyObservers.has(codeContentElement)) {
+    debugLog('waitForCodeContentAndHighlight:already-waiting', getElementDebugMeta(codeContentElement));
+    return;
+  }
+
+  debugLog('waitForCodeContentAndHighlight:observer-created', getElementDebugMeta(codeContentElement));
 
   const observer = new MutationObserver(() => {
-    if (!hasRealCodeContent(codeContentElement)) return;
+    if (!hasRealCodeContent(codeContentElement)) {
+      debugLog('waitForCodeContentAndHighlight:mutation-but-still-loading', getElementDebugMeta(codeContentElement));
+      return;
+    }
 
     observer.disconnect();
     contentReadyObservers.delete(codeContentElement);
+    debugLog('waitForCodeContentAndHighlight:content-ready-now-highlighting', getElementDebugMeta(codeContentElement));
     highlightCodeBlock(codeContentElement);
   });
 
@@ -144,26 +205,56 @@ const highlightCodeBlock = (codeContentElement: HTMLElement, preserveSelection =
   const codeBlockWrapper = codeContentElement.closest('.notion-code-block');
   const languageInfo = getCodeBlockLanguage(codeBlockWrapper);
   const currentLanguage = languageInfo?.language ?? '';
+  const mappedLanguage = LANGUAGE_MAPPER[currentLanguage];
 
-  if (!(currentLanguage in LANGUAGE_MAPPER)) return;
+  debugLog('highlightCodeBlock:start', {
+    preserveSelection,
+    languageInfo,
+    currentLanguage,
+    mappedLanguage,
+    codeBlock: getElementDebugMeta(codeBlockWrapper)
+  });
+
+  if (!(currentLanguage in LANGUAGE_MAPPER)) {
+    debugLog('highlightCodeBlock:language-not-supported-by-mapper', { currentLanguage, languageInfo });
+    return;
+  }
 
   const savedOffset = preserveSelection ? captureSelectionOffset(codeContentElement) : null;
+  if (preserveSelection) {
+    debugLog('highlightCodeBlock:captured-selection-offset', { savedOffset });
+  }
 
   overrideCodeBlockStyles(codeContentElement);
   insertHighlightedCode(codeContentElement, currentLanguage);
 
   if (preserveSelection && savedOffset !== null) {
     restoreSelectionOffset(codeContentElement, savedOffset);
+    debugLog('highlightCodeBlock:selection-restored', { savedOffset });
   }
+
+  debugLog('highlightCodeBlock:done', {
+    language: currentLanguage,
+    mappedLanguage
+  });
 };
 
 const insertHighlightedCode = (codeContentElement: HTMLElement, language: string) => {
+  debugLog('insertHighlightedCode:start', {
+    sourceLength: (codeContentElement.textContent ?? '').length,
+    language,
+    mappedLanguage: LANGUAGE_MAPPER[language]
+  });
+
   const highlightResult = hljs.highlight(codeContentElement.textContent ?? '', {
     language: LANGUAGE_MAPPER[language],
     ignoreIllegals: false
   });
 
   codeContentElement.innerHTML = highlightResult.value;
+  debugLog('insertHighlightedCode:done', {
+    highlightedLength: highlightResult.value.length
+  });
 };
 
 // Selection helpers
@@ -237,14 +328,23 @@ const overrideCodeBlockStyles = (codeContentElement: HTMLElement, mode: 'insert'
 // React language extraction
 
 const getCodeBlockLanguage = (codeBlockElement: Element | null): LanguageInfo | null => {
-  if (!codeBlockElement) return null;
+  if (!codeBlockElement) {
+    debugLog('getCodeBlockLanguage:missing-code-block-element');
+    return null;
+  }
 
   // Notion stores language in React internals; DOM alone does not expose it reliably.
   const reactKey = Object.keys(codeBlockElement).find((k) => k.includes('reactFiber') || k.includes('reactInternal'));
-  if (!reactKey) return null;
+  if (!reactKey) {
+    debugLog('getCodeBlockLanguage:missing-react-internal-key', getElementDebugMeta(codeBlockElement));
+    return null;
+  }
 
   const rootFiber = (codeBlockElement as Record<string, unknown>)[reactKey] as FiberNode | undefined;
-  if (!rootFiber) return null;
+  if (!rootFiber) {
+    debugLog('getCodeBlockLanguage:react-root-fiber-missing', { reactKey });
+    return null;
+  }
 
   const visited = new Set<FiberNode>();
   const queue: FiberNode[] = [rootFiber];
@@ -256,12 +356,15 @@ const getCodeBlockLanguage = (codeBlockElement: Element | null): LanguageInfo | 
 
     const props = node.memoizedProps ?? node.pendingProps;
     if (props?.language) {
-      return {
+      const result = {
         language: props.language,
         canEdit: props.canEdit,
         store: props.store,
         component: node.type?.name || node.elementType?.name
       };
+
+      debugLog('getCodeBlockLanguage:found-language', result);
+      return result;
     }
 
     if (node.child) queue.push(node.child);
@@ -269,5 +372,6 @@ const getCodeBlockLanguage = (codeBlockElement: Element | null): LanguageInfo | 
     if (node.return) queue.push(node.return);
   }
 
+  debugLog('getCodeBlockLanguage:language-not-found-after-traversal');
   return null;
 };
