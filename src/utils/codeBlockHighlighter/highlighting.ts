@@ -37,19 +37,8 @@ export const highlightCodeBlock = (codeContentElement: HTMLElement, preserveSele
   }
 
   resetLanguageRetryState(codeContentElement);
-
-  const savedOffset = preserveSelection ? captureSelectionOffset(codeContentElement) : null;
-  if (preserveSelection) {
-    debugLog('highlightCodeBlock:captured-selection-offset', { savedOffset });
-  }
-
   overrideCodeBlockStyles(codeContentElement);
   insertHighlightedCode(codeContentElement, currentLanguage);
-
-  if (preserveSelection && savedOffset !== null) {
-    restoreSelectionOffset(codeContentElement, savedOffset);
-    debugLog('highlightCodeBlock:selection-restored', { savedOffset });
-  }
 
   debugLog('highlightCodeBlock:done', {
     language: currentLanguage,
