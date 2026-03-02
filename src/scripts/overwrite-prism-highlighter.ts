@@ -1,6 +1,6 @@
 import { Grammar } from 'prismjs';
 import hljs from '../utils/hljs-setup';
-import { highlightExistingCodeBlocks, highlightNewCodeBlocks } from '../utils/code-block-highlighter';
+import { highlightExistingCodeBlocks, highlightNewCodeBlocks } from '../utils/codeBlockHighlighter';
 
 function overwritePrismHighlighter() {
   if (window.Prism) {
